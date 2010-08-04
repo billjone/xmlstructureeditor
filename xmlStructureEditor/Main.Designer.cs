@@ -73,9 +73,9 @@
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.tsbtnRootElement = new System.Windows.Forms.ToolStripButton();
             this.tsbtnAddElement = new System.Windows.Forms.ToolStripButton();
-            this.tsbAddAttribute = new System.Windows.Forms.ToolStripButton();
+            this.tsbtnAddAttribute = new System.Windows.Forms.ToolStripButton();
             this.tsbtnDelete = new System.Windows.Forms.ToolStripButton();
-            this.addData = new System.Windows.Forms.ToolStripButton();
+            this.tsbtnAddData = new System.Windows.Forms.ToolStripButton();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusBar.SuspendLayout();
             this.mainTabs.SuspendLayout();
@@ -439,9 +439,9 @@
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbtnRootElement,
             this.tsbtnAddElement,
-            this.tsbAddAttribute,
+            this.tsbtnAddAttribute,
             this.tsbtnDelete,
-            this.addData});
+            this.tsbtnAddData});
             this.toolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
@@ -472,16 +472,16 @@
             this.tsbtnAddElement.Text = "Add Element";
             this.tsbtnAddElement.Click += new System.EventHandler(this.tsbtnAddElement_Click);
             // 
-            // tsbAddAttribute
+            // tsbtnAddAttribute
             // 
-            this.tsbAddAttribute.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbAddAttribute.Image = ((System.Drawing.Image)(resources.GetObject("tsbAddAttribute.Image")));
-            this.tsbAddAttribute.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbAddAttribute.Name = "tsbAddAttribute";
-            this.tsbAddAttribute.Size = new System.Drawing.Size(29, 29);
-            this.tsbAddAttribute.Text = "Add Attribute";
-            this.tsbAddAttribute.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
-            this.tsbAddAttribute.Click += new System.EventHandler(this.tsbAddAttribute_Click);
+            this.tsbtnAddAttribute.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnAddAttribute.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnAddAttribute.Image")));
+            this.tsbtnAddAttribute.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnAddAttribute.Name = "tsbtnAddAttribute";
+            this.tsbtnAddAttribute.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnAddAttribute.Text = "Add Attribute";
+            this.tsbtnAddAttribute.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
+            this.tsbtnAddAttribute.Click += new System.EventHandler(this.tsbAddAttribute_Click);
             // 
             // tsbtnDelete
             // 
@@ -493,15 +493,15 @@
             this.tsbtnDelete.Text = "toolStripButton1";
             this.tsbtnDelete.Click += new System.EventHandler(this.tsbtnDelete_Click);
             // 
-            // addData
+            // tsbtnAddData
             // 
-            this.addData.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.addData.Image = ((System.Drawing.Image)(resources.GetObject("addData.Image")));
-            this.addData.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addData.Name = "addData";
-            this.addData.Size = new System.Drawing.Size(29, 29);
-            this.addData.Text = "Add Data";
-            this.addData.Click += new System.EventHandler(this.addData_Click);
+            this.tsbtnAddData.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnAddData.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnAddData.Image")));
+            this.tsbtnAddData.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnAddData.Name = "tsbtnAddData";
+            this.tsbtnAddData.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnAddData.Text = "Add Data";
+            this.tsbtnAddData.Click += new System.EventHandler(this.tsbtnAddData_Click);
             // 
             // Main
             // 
@@ -576,9 +576,9 @@
         private NewControls.TreeViewWithPaint xmlTreeview;
         private NewControls.TreeViewWithPaint schemaTreeview;
         private System.Windows.Forms.ToolStripButton tsbtnAddElement;
-        private System.Windows.Forms.ToolStripButton tsbAddAttribute;
+        private System.Windows.Forms.ToolStripButton tsbtnAddAttribute;
         private System.Windows.Forms.ToolStripButton tsbtnDelete;
-        private System.Windows.Forms.ToolStripButton addData;
+        private System.Windows.Forms.ToolStripButton tsbtnAddData;
         private System.Windows.Forms.ToolStripStatusLabel tsStatusLabelClear;
     }
 }

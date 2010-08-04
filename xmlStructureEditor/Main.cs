@@ -251,19 +251,23 @@ namespace xmlStructureEditor
      
             XmlElement attribTarget = (XmlElement) xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.FullPath.ToString()));
 
-            attribTarget.SetAttribute(
-                frmAttrib.getAttribName(),
-                frmAttrib.getAttribVal());
 
+            XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+                   .SelectedNode.FullPath.ToString()))
+                   .ParentNode.ChildNodes;
 
+           
+            XmlAttribute att = xmlDoc.CreateAttribute(frmAttrib.getAttribName());
+            att.Value = frmAttrib.getAttribVal();
 
+            nl[xmlTreeview.SelectedNode.Index].Attributes.Append(att);
+                
             updateTreeviewXml();
             updateRtbXml();
 
-         //   attribTarget.SetAttribute("Blah", "blahblah");
         }
 
-        private void addData_Click(object sender, EventArgs e)
+        private void tsbtnAddData_Click(object sender, EventArgs e)
         {
             
             // Grabs the location of the targetted node. Need to add checks to see if this is a valid target
