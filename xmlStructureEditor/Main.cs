@@ -68,7 +68,7 @@ namespace xmlStructureEditor
                 // SECTION 1. Create a DOM Document and load the XML data into it.                
                 
                 xmlDoc.Load(@"c:\temp\books.xml");
-                updateTreeviewXml();
+                
 
                 /*
                 xmlTreeview.Nodes.Clear();
@@ -107,38 +107,46 @@ namespace xmlStructureEditor
             xmlDoc = new XmlDocument(); // create in memory an empty, default xml document to work with.
                                         // any loaded documents will be placed here
 
-            xmlDoc.NodeChanged += new XmlNodeChangedEventHandler(xmlDoc_NodeChanged);
 
 
-
+            // Events to control updating xmlTree/RTB
+            xmlDoc.NodeInserted += new XmlNodeChangedEventHandler(updateXmlDisplays);
+            xmlDoc.NodeRemoved += new XmlNodeChangedEventHandler(updateXmlDisplays);
+            xmlDoc.NodeChanged += new XmlNodeChangedEventHandler(updateXmlDisplays);
+            
         }
 
-        void xmlDoc_NodeChanged(object sender, XmlNodeChangedEventArgs e)
+      
+        private void updateXmlDisplays(object sender, XmlNodeChangedEventArgs e)
         {
-            MessageBox.Show("xmlDoc Change event fired!");
-        }
+            xmlTreeview.BeginUpdate();
+            xmlTreeview.Nodes.Clear();
+            xmlTreeview.EndUpdate();
+            xmlFunctions.ConvertXmlNodeToTreeNode(xmlDoc, xmlTreeview.Nodes);
+            xmlTreeview.ExpandAll();
+            genTreeTags gen = new genTreeTags(xmlTreeview);
 
+            StringWriter sw = new StringWriter();
+            XmlTextWriter xw = new XmlTextWriter(sw);
+            xmlDoc.WriteTo(xw);
+
+            rtbXML.Text = sw.ToString();
+        }
+      
         
 
         private void InitializeTreeView() // Handles Treeview drawing
-        {
-            // xmlTreeview.ControlAdded +=new EventHandler(xmlTreeview_TabIndexChanged);
-
+        {          
             xmlTreeview.Paint += new PaintEventHandler(Treeview_Paint);
             schemaTreeview.Paint += new PaintEventHandler(Treeview_Paint);
-
             xmlTreeview.AfterSelect += new TreeViewEventHandler(xmlTreeview_AfterSelect);
             
         }
 
         void xmlTreeview_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            tsStatusLabel.Text = xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.FullPath.ToString());
-            
+            tsStatusLabel.Text = xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.FullPath.ToString());            
             tsStatusLabelClear.Text = xmlTreeview.SelectedNode.FullPath.ToString();
-
-           // tsStatusLabelClear.Text = xmlTreeview.SelectedNode.Index.ToString();
-
             tsLabelnodeIndex.Text = xmlTreeview.SelectedNode.Tag.ToString();
         }
 
@@ -192,9 +200,7 @@ namespace xmlStructureEditor
 
                 
 
-                // Update the Tree/Text views
-                updateTreeviewXml();
-                updateRtbXml();
+               
 
             }
             catch (Exception ex)
@@ -250,56 +256,26 @@ namespace xmlStructureEditor
                 .AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));
                                 
               
-                    
-    
-            updateTreeviewXml();
-            updateRtbXml();
             
         }
 
 
-        private void updateTreeviewXml()
-        {
-            xmlTreeview.BeginUpdate();
-            xmlTreeview.Nodes.Clear();
-            xmlTreeview.EndUpdate();
-            xmlFunctions.ConvertXmlNodeToTreeNode(xmlDoc, xmlTreeview.Nodes);
-            xmlTreeview.ExpandAll();            
-            
+      
 
-        }
-
-        private void updateRtbXml()
-        {
-
-            StringWriter sw = new StringWriter();
-            XmlTextWriter xw = new XmlTextWriter(sw);
-            xmlDoc.WriteTo(xw);
-
-            rtbXML.Text = sw.ToString();
-        }
+      
 
         private void tsbAddAttribute_Click(object sender, EventArgs e)
         {
             addAttribute frmAttrib = new addAttribute();
             frmAttrib.ShowDialog();
-     
-            XmlElement attribTarget = (XmlElement) xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.FullPath.ToString()));
+            
+            XmlElement attribTarget = (XmlElement)xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString());
 
-
-            XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                   .SelectedNode.FullPath.ToString()))
-                   .ParentNode.ChildNodes;
-
-           
             XmlAttribute att = xmlDoc.CreateAttribute(frmAttrib.getAttribName());
             att.Value = frmAttrib.getAttribVal();
 
-            nl[xmlTreeview.SelectedNode.Index].Attributes.Append(att);
-                
-            updateTreeviewXml();
-            updateRtbXml();
-
+            attribTarget.Attributes.Append(att);              
+            
         }
 
         private void tsbtnAddData_Click(object sender, EventArgs e)
@@ -361,8 +337,6 @@ namespace xmlStructureEditor
             }
                         
             
-            updateTreeviewXml();
-            updateRtbXml();
         }
 
         private void tsbtnDelete_Click(object sender, EventArgs e) // change this to be more modular, i.e. use functions
@@ -380,15 +354,18 @@ namespace xmlStructureEditor
             if (xmlTreeview.SelectedNode.FullPath.ToString().EndsWith("]") && 
                 !xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.Parent.FullPath.ToString()).Contains("ATTRIBUTE"))
             {
-                nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                   .SelectedNode.Parent.FullPath.ToString()))
-                      .ParentNode.ChildNodes;
+               // nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+                //   .SelectedNode.Parent.FullPath.ToString()))
+                 //     .ParentNode.ChildNodes;
+
+                xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).ParentNode.RemoveChild(
+                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).FirstChild);
                 
-                nl[xmlTreeview.SelectedNode.Parent.Index]
-                    .RemoveChild(nl[xmlTreeview.SelectedNode.Parent.Index].FirstChild);                               
+//                nl[xmlTreeview.SelectedNode.Parent.Index]
+ //                   .RemoveChild(nl[xmlTreeview.SelectedNode.Parent.Index].FirstChild);                               
                                                 
 
-                xmlTreeview.SelectedNode.Remove();
+   //             xmlTreeview.SelectedNode.Remove();
                 
 
             }
@@ -418,21 +395,20 @@ namespace xmlStructureEditor
             {
 
 
-                nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                                 .SelectedNode.FullPath.ToString()))
-                                 .ParentNode.ChildNodes;
 
-                switch (nl[xmlTreeview.SelectedNode.Index].NodeType)
+
+
+
+                switch (xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).NodeType)
                 {
                     case XmlNodeType.ProcessingInstruction:
                     case XmlNodeType.XmlDeclaration:
-
-                        break;
+                        break;                    
                     case XmlNodeType.Element:
-                            nl[xmlTreeview.SelectedNode.Index].ParentNode.RemoveChild(nl[xmlTreeview.SelectedNode.Index]);                        
+                        xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString())
+                            .ParentNode.RemoveChild(xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()));
                         break;                                     
-                    case XmlNodeType.CDATA:
-
+                    case XmlNodeType.CDATA:                        
                         break;
                     case XmlNodeType.Comment:
 
@@ -440,8 +416,7 @@ namespace xmlStructureEditor
                 }
             }
             
-            updateTreeviewXml();
-            updateRtbXml();
+           
 
         }
 
@@ -458,37 +433,27 @@ namespace xmlStructureEditor
             XmlCDataSection cdata = xmlDoc.CreateCDataSection(frm.getCdata());
 
             nl[xmlTreeview.SelectedNode.Index].AppendChild(cdata);
-            updateTreeviewXml();
-            updateRtbXml();
+        ;
         }
 
         private void tsbtnComment_Click(object sender, EventArgs e)
-        {
-            XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-               .SelectedNode.FullPath.ToString()))
-               .ParentNode.ChildNodes;
-
-
+        {     
             addComment frm = new addComment();
             frm.ShowDialog();
 
 
-            XmlComment cmt = xmlDoc.CreateComment(frm.getComment());            
-            nl[xmlTreeview.SelectedNode.Index].AppendChild(cmt);
+            XmlComment cmt = xmlDoc.CreateComment(frm.getComment());
+            xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).AppendChild(cmt);
+            
+            
 
-            updateTreeviewXml();
-            updateRtbXml();
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            genTreeTags gen = new genTreeTags();
-            gen.TraverseTreeView(xmlTreeview);
-
-
-
-            XmlNode ele = xmlDoc.SelectSingleNode("/catalog/book[10]/description[0]");
-            MessageBox.Show("Done");
+            
+            MessageBox.Show(xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText);
 
 
         }
