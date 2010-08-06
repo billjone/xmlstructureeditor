@@ -78,6 +78,8 @@
             this.tsbtnAddData = new System.Windows.Forms.ToolStripButton();
             this.tsbtnAddCDATA = new System.Windows.Forms.ToolStripButton();
             this.tsbtnComment = new System.Windows.Forms.ToolStripButton();
+            this.tsLabelnodeIndex = new System.Windows.Forms.ToolStripStatusLabel();
+            this.button1 = new System.Windows.Forms.Button();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusBar.SuspendLayout();
             this.mainTabs.SuspendLayout();
@@ -330,14 +332,15 @@
             this.listErrors.FormattingEnabled = true;
             this.listErrors.Location = new System.Drawing.Point(37, 611);
             this.listErrors.Name = "listErrors";
-            this.listErrors.Size = new System.Drawing.Size(1072, 95);
+            this.listErrors.Size = new System.Drawing.Size(913, 95);
             this.listErrors.TabIndex = 1;
             // 
             // mainStatusBar
             // 
             this.mainStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsStatusLabel,
-            this.tsStatusLabelClear});
+            this.tsStatusLabelClear,
+            this.tsLabelnodeIndex});
             this.mainStatusBar.Location = new System.Drawing.Point(0, 715);
             this.mainStatusBar.Name = "mainStatusBar";
             this.mainStatusBar.Size = new System.Drawing.Size(1113, 22);
@@ -450,7 +453,7 @@
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.toolStrip.Size = new System.Drawing.Size(32, 691);
+            this.toolStrip.Size = new System.Drawing.Size(30, 691);
             this.toolStrip.TabIndex = 5;
             this.toolStrip.Text = "toolStrip1";
             // 
@@ -523,15 +526,32 @@
             this.tsbtnComment.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnComment.Image")));
             this.tsbtnComment.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnComment.Name = "tsbtnComment";
-            this.tsbtnComment.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnComment.Size = new System.Drawing.Size(27, 29);
             this.tsbtnComment.Text = "Add Comment";
             this.tsbtnComment.Click += new System.EventHandler(this.tsbtnComment_Click);
+            // 
+            // tsLabelnodeIndex
+            // 
+            this.tsLabelnodeIndex.Name = "tsLabelnodeIndex";
+            this.tsLabelnodeIndex.Size = new System.Drawing.Size(118, 17);
+            this.tsLabelnodeIndex.Text = "toolStripStatusLabel1";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1014, 643);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1113, 737);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.mainTabs);
             this.Controls.Add(this.mainStatusBar);
@@ -606,6 +626,8 @@
         private System.Windows.Forms.ToolStripStatusLabel tsStatusLabelClear;
         private System.Windows.Forms.ToolStripButton tsbtnAddCDATA;
         private System.Windows.Forms.ToolStripButton tsbtnComment;
+        private System.Windows.Forms.ToolStripStatusLabel tsLabelnodeIndex;
+        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -48,43 +48,48 @@ namespace xmlStructureEditor
 
 
     public static void ConvertXmlNodeToTreeNode(XmlNode xmlNode, // function turns xml doc into a LABELLED treeview
-      TreeNodeCollection treeNodes) {
+      TreeNodeCollection treeNodes)
+    {
 
-        
-        TreeNode newTreeNode = treeNodes.Add(xmlNode.Name);
+             TreeNode newTreeNode = treeNodes.Add(xmlNode.Name);
 
-        switch (xmlNode.NodeType) {
-            case XmlNodeType.ProcessingInstruction:
-            case XmlNodeType.XmlDeclaration:
-                newTreeNode.Text = "<?" + xmlNode.Name + " " + 
-                  xmlNode.Value + "?>";
-                break;
-            case XmlNodeType.Element:
-                newTreeNode.Text = "<" + xmlNode.Name + ">";
-                break;
-            case XmlNodeType.Attribute:
-                newTreeNode.Text = "ATTRIBUTE: " + xmlNode.Name;
-                break;
-            case XmlNodeType.Text:
-                newTreeNode.Text = "[" + xmlNode.Value + "]";
-                break;
-            case XmlNodeType.CDATA:
-                newTreeNode.Text = "CDATA: " + xmlNode.Value;
-                break;
-            case XmlNodeType.Comment:
-                newTreeNode.Text = "<!--" + xmlNode.Value + "-->";
-                break;       
-        }
+            switch (xmlNode.NodeType)
+            {
+                case XmlNodeType.ProcessingInstruction:
+                case XmlNodeType.XmlDeclaration:
+                    newTreeNode.Text = "<?" + xmlNode.Name + " " +
+                      xmlNode.Value + "?>";
+                    break;
+                case XmlNodeType.Element:
+                    newTreeNode.Text = "<" + xmlNode.Name + ">";
+                    break;
+                case XmlNodeType.Attribute:
+                    newTreeNode.Text = "ATTRIBUTE: " + xmlNode.Name;
+                    break;
+                case XmlNodeType.Text:
+                    newTreeNode.Text = "[" + xmlNode.Value + "]";
+                    break;
+                case XmlNodeType.CDATA:
+                    newTreeNode.Text = "CDATA: " + xmlNode.Value;
+                    break;
+                case XmlNodeType.Comment:
+                    newTreeNode.Text = "<!--" + xmlNode.Value + "-->";
+                    break;
+            }
 
-        if (xmlNode.Attributes != null) {
-            foreach (XmlAttribute attribute in xmlNode.Attributes) {
-                ConvertXmlNodeToTreeNode(attribute, newTreeNode.Nodes);
+            if (xmlNode.Attributes != null)
+            {
+                foreach (XmlAttribute attribute in xmlNode.Attributes)
+                {
+                    ConvertXmlNodeToTreeNode(attribute, newTreeNode.Nodes);
+                }
+            }
+            foreach (XmlNode childNode in xmlNode.ChildNodes)
+            {
+                ConvertXmlNodeToTreeNode(childNode, newTreeNode.Nodes);
             }
         }
-        foreach (XmlNode childNode in xmlNode.ChildNodes) {
-            ConvertXmlNodeToTreeNode(childNode, newTreeNode.Nodes);
-        }
-    }
+
 
     public static string treeToXpath(string path) // function to repair pathing differences between Xpath and TreeviewPath.. Microsoft idiocy!
     {
