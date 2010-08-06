@@ -369,14 +369,14 @@ namespace xmlStructureEditor
                 {
                     xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
                  .SelectedNode.Parent.Parent.FullPath.ToString()))
-                 .Attributes.RemoveNamedItem("id");
+                 .Attributes.RemoveNamedItem(xmlTreeview.SelectedNode.Parent.Text.Replace("ATTRIBUTE: ", ""));
                 }
                 else
                 {
                     // if SelectedNode.parent doesn't contain attribute then you're on the attribute parent element!
                     xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
                       .SelectedNode.Parent.FullPath.ToString()))
-                      .Attributes.RemoveNamedItem("id");
+                      .Attributes.RemoveNamedItem(xmlTreeview.SelectedNode.Text.Replace("ATTRIBUTE: ", ""));
                 }
                 
 
@@ -397,10 +397,7 @@ namespace xmlStructureEditor
                         break;
                     case XmlNodeType.Element:
                             nl[xmlTreeview.SelectedNode.Index].ParentNode.RemoveChild(nl[xmlTreeview.SelectedNode.Index]);                        
-                        break;
-                    case XmlNodeType.Attribute:
-
-                        break;                    
+                        break;                                     
                     case XmlNodeType.CDATA:
 
                         break;
