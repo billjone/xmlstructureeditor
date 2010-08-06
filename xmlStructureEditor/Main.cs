@@ -333,7 +333,7 @@ namespace xmlStructureEditor
             updateRtbXml();
         }
 
-        private void tsbtnDelete_Click(object sender, EventArgs e)
+        private void tsbtnDelete_Click(object sender, EventArgs e) // change this to be more modular, i.e. use functions
         {
             XmlNodeList nl;
 
@@ -345,7 +345,8 @@ namespace xmlStructureEditor
              * ez
             */
 
-            if (xmlTreeview.SelectedNode.FullPath.ToString().EndsWith("]"))
+            if (xmlTreeview.SelectedNode.FullPath.ToString().EndsWith("]") && 
+                !xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.Parent.FullPath.ToString()).Contains("ATTRIBUTE"))
             {
                 nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
                    .SelectedNode.Parent.FullPath.ToString()))
@@ -355,6 +356,28 @@ namespace xmlStructureEditor
                     .RemoveChild(nl[xmlTreeview.SelectedNode.Parent.Index].FirstChild);
 
                 xmlTreeview.SelectedNode.Remove();
+                
+
+            }
+            else if (xmlTreeview.SelectedNode.FullPath.ToString().Contains("ATTRIBUTE")) // REMOVE ATTRIBUTE CODE
+            {
+
+
+                // if SelectedNode.parent contains 'attribute' then you're on the attribute text value
+
+                if (xmlTreeview.SelectedNode.Parent.FullPath.Contains("ATTRIBUTE"))
+                {
+                    xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+                 .SelectedNode.Parent.Parent.FullPath.ToString()))
+                 .Attributes.RemoveNamedItem("id");
+                }
+                else
+                {
+                    // if SelectedNode.parent doesn't contain attribute then you're on the attribute parent element!
+                    xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+                      .SelectedNode.Parent.FullPath.ToString()))
+                      .Attributes.RemoveNamedItem("id");
+                }
                 
 
             }
