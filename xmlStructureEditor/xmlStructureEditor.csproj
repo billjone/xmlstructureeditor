@@ -52,28 +52,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="addAttribute.cs">
+    <Compile Include="addView\addAttribute.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="addAttribute.Designer.cs">
+    <Compile Include="addView\addAttribute.Designer.cs">
       <DependentUpon>addAttribute.cs</DependentUpon>
     </Compile>
-    <Compile Include="addData.cs">
+    <Compile Include="addView\addCdata.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="addData.Designer.cs">
+    <Compile Include="addView\addCdata.Designer.cs">
+      <DependentUpon>addCdata.cs</DependentUpon>
+    </Compile>
+    <Compile Include="addView\addComment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="addView\addComment.Designer.cs">
+      <DependentUpon>addComment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="addView\addData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="addView\addData.Designer.cs">
       <DependentUpon>addData.cs</DependentUpon>
     </Compile>
-    <Compile Include="addElement.cs">
+    <Compile Include="addView\addElement.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="addElement.Designer.cs">
+    <Compile Include="addView\addElement.Designer.cs">
       <DependentUpon>addElement.cs</DependentUpon>
     </Compile>
-    <Compile Include="addRootElement.cs">
+    <Compile Include="addView\addRootElement.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="addRootElement.Designer.cs">
+    <Compile Include="addView\addRootElement.Designer.cs">
       <DependentUpon>addRootElement.cs</DependentUpon>
     </Compile>
     <Compile Include="Main.cs">
@@ -84,15 +96,23 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="addAttribute.resx">
+    <EmbeddedResource Include="addView\addAttribute.resx">
       <DependentUpon>addAttribute.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="addData.resx">
+    <EmbeddedResource Include="addView\addCdata.resx">
+      <DependentUpon>addCdata.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="addView\addComment.resx">
+      <DependentUpon>addComment.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="addView\addData.resx">
       <DependentUpon>addData.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="addElement.resx">
+    <EmbeddedResource Include="addView\addElement.resx">
       <DependentUpon>addElement.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -105,7 +125,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="addRootElement.resx">
+    <EmbeddedResource Include="addView\addRootElement.resx">
       <DependentUpon>addRootElement.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>

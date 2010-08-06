@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*******************************************************************************
+Class xmlFunctions
+ (c) 2009-2010 S. Dluzewski
+
+ Info to add later..
+*******************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,11 +69,11 @@ namespace xmlStructureEditor
                 newTreeNode.Text = "[" + xmlNode.Value + "]";
                 break;
             case XmlNodeType.CDATA:
-                newTreeNode.Text = xmlNode.Value;
+                newTreeNode.Text = "CDATA: " + xmlNode.Value;
                 break;
             case XmlNodeType.Comment:
                 newTreeNode.Text = "<!--" + xmlNode.Value + "-->";
-                break;
+                break;       
         }
 
         if (xmlNode.Attributes != null) {

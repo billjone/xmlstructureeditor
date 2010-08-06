@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*******************************************************************************
+Class Main
+ (c) 2009-2010 S. Dluzewski
+
+ Info to add later..
+*******************************************************************************/
+
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -407,17 +415,44 @@ namespace xmlStructureEditor
                 }
             }
             
-
-
-
-            
-
-        
-
-            
             updateTreeviewXml();
             updateRtbXml();
 
+        }
+
+        private void tsbtnAddCDATA_Click(object sender, EventArgs e)
+        {
+            XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+                .SelectedNode.FullPath.ToString()))
+                .ParentNode.ChildNodes;
+
+
+            addCdata frm = new addCdata();
+            frm.ShowDialog();                               
+
+            XmlCDataSection cdata = xmlDoc.CreateCDataSection(frm.getCdata());
+
+            nl[xmlTreeview.SelectedNode.Index].AppendChild(cdata);
+            updateTreeviewXml();
+            updateRtbXml();
+        }
+
+        private void tsbtnComment_Click(object sender, EventArgs e)
+        {
+            XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+               .SelectedNode.FullPath.ToString()))
+               .ParentNode.ChildNodes;
+
+
+            addComment frm = new addComment();
+            frm.ShowDialog();
+
+
+            XmlComment cmt = xmlDoc.CreateComment(frm.getComment());            
+            nl[xmlTreeview.SelectedNode.Index].AppendChild(cmt);
+
+            updateTreeviewXml();
+            updateRtbXml();
         }
 
 
