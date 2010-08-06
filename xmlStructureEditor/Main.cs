@@ -140,11 +140,15 @@ namespace xmlStructureEditor
                 tsbtnRootElement.Enabled = false;
                 tsbtnAddElement.Enabled = true;
             }
+
+
+
+
+            
+
+                        
             
             
-            
-            
-            // code to redraw the rtb's containing pure xml
         }
 
         private void tsbtnRootElement_Click(object sender, EventArgs e)
@@ -211,7 +215,6 @@ namespace xmlStructureEditor
                 nl[xmlTreeview.SelectedNode.Index]
                     .AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));
                                 
-                // This method is GENIUS. You hvae to do it this way, otherwise multiple element names just won't work.
               
             }
 
@@ -290,15 +293,20 @@ namespace xmlStructureEditor
                  frm.ShowDialog();
 
                  if (!nl[xmlTreeview.SelectedNode.Index].InnerText.Equals(frm.getData()))
-                    nl[xmlTreeview.SelectedNode.Index].InnerText = frm.getData(); // update the data ONLY if the data is new                              
+                 {
 
+                     XmlText txtData = xmlDoc.CreateTextNode(frm.getData());                     
+                     nl[xmlTreeview.SelectedNode.Index].AppendChild(txtData);
+                   //  nl[xmlTreeview.SelectedNode.Index].InnerText = frm.getData(); // update the data ONLY if the data is new                              
+
+                 }
 
             }
             else
             {
 
                 XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                    .SelectedNode.FullPath.ToString()))
+                    .SelectedNode.Parent.FullPath.ToString()))
                     .ParentNode.ChildNodes;
 
                 string it = nl[xmlTreeview.SelectedNode.Parent.Index].InnerText;
@@ -311,30 +319,85 @@ namespace xmlStructureEditor
                 frm.ShowDialog();
 
                 if (!nl[xmlTreeview.SelectedNode.Parent.Index].InnerText.Equals(frm.getData()))
-                    nl[xmlTreeview.SelectedNode.Parent.Index].InnerText = frm.getData(); // update the data ONLY if the data is new    
+                {
+                    XmlText txtData = xmlDoc.CreateTextNode(frm.getData());
+                    nl[xmlTreeview.SelectedNode.Index].AppendChild(txtData);
+                }
+                 
                
 
             }
                         
-
-           
-
-         
-
-        
             
-
-          
-
-
             updateTreeviewXml();
             updateRtbXml();
         }
 
         private void tsbtnDelete_Click(object sender, EventArgs e)
         {
-          //  XmlNode node = doc.SelectSingleNode("/players/player[name='User2']");
-         //   node.ParentNode.RemoveChild(node);  
+            XmlNodeList nl;
+
+            /*
+             * If targeted node = Element (contains <>); remove the element
+             * If targeted node = Attribute, get collection of attributes, then remove the correct one (index)
+             * If targeted node = Data, .InnerText = "";
+             * 
+             * ez
+            */
+
+            if (xmlTreeview.SelectedNode.FullPath.ToString().EndsWith("]"))
+            {
+                nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+                   .SelectedNode.Parent.FullPath.ToString()))
+                   .ParentNode.ChildNodes;
+                
+                nl[xmlTreeview.SelectedNode.Parent.Index]
+                    .RemoveChild(nl[xmlTreeview.SelectedNode.Parent.Index].FirstChild);
+
+                xmlTreeview.SelectedNode.Remove();
+                
+
+            }
+            else
+            {
+
+
+                nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+                                 .SelectedNode.FullPath.ToString()))
+                                 .ParentNode.ChildNodes;
+
+                switch (nl[xmlTreeview.SelectedNode.Index].NodeType)
+                {
+                    case XmlNodeType.ProcessingInstruction:
+                    case XmlNodeType.XmlDeclaration:
+
+                        break;
+                    case XmlNodeType.Element:
+                            nl[xmlTreeview.SelectedNode.Index].ParentNode.RemoveChild(nl[xmlTreeview.SelectedNode.Index]);                        
+                        break;
+                    case XmlNodeType.Attribute:
+
+                        break;                    
+                    case XmlNodeType.CDATA:
+
+                        break;
+                    case XmlNodeType.Comment:
+
+                        break;
+                }
+            }
+            
+
+
+
+            
+
+        
+
+            
+            updateTreeviewXml();
+            updateRtbXml();
+
         }
 
 
