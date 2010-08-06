@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*******************************************************************************
+Class Program
+ (c) 2009-2010 S. Dluzewski
+
+ Info to add later..
+*******************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
