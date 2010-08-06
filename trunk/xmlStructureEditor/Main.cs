@@ -68,8 +68,9 @@ namespace xmlStructureEditor
                 // SECTION 1. Create a DOM Document and load the XML data into it.                
                 
                 xmlDoc.Load(@"c:\temp\books.xml");
+                updateTreeviewXml();
 
-                // SECTION 2. Initialize the TreeView control.
+                /*
                 xmlTreeview.Nodes.Clear();
                 xmlTreeview.Nodes.Add(new TreeNode(xmlDoc.DocumentElement.Name));                
                 TreeNode tNode = new TreeNode();
@@ -78,6 +79,8 @@ namespace xmlStructureEditor
                 // SECTION 3. Populate the TreeView with the DOM nodes.
                 xmlFunctions.AddNode(xmlDoc.DocumentElement, tNode);
                 xmlTreeview.ExpandAll();
+                 * */
+
             }
             catch (XmlException xmlEx)
             {
@@ -131,7 +134,12 @@ namespace xmlStructureEditor
         void xmlTreeview_AfterSelect(object sender, TreeViewEventArgs e)
         {
             tsStatusLabel.Text = xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.FullPath.ToString());
+            
             tsStatusLabelClear.Text = xmlTreeview.SelectedNode.FullPath.ToString();
+
+           // tsStatusLabelClear.Text = xmlTreeview.SelectedNode.Index.ToString();
+
+            tsLabelnodeIndex.Text = xmlTreeview.SelectedNode.Tag.ToString();
         }
 
 
@@ -205,27 +213,43 @@ namespace xmlStructureEditor
         
         private void tsbtnAddElement_Click(object sender, EventArgs e)
         {
-            if (!xmlTreeview.SelectedNode.FullPath.ToString().EndsWith(">")) // Check that the selected node is a valid target to add an element to..
-                MessageBox.Show("Cannot add an element to a data object!"); // replace this with tooltip?
-            else
-            {
-                addElement frmElement = new addElement();
+           
+            addElement frmElement = new addElement();
                               
-                frmElement.ShowDialog();
+            frmElement.ShowDialog();
+
+
+            
+
+            // get a list of all the elements in the selected node
+            XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+                .SelectedNode.FullPath.ToString()))
+                .ParentNode.ChildNodes;
+
+            
+            
+            
 
 
 
-                // get a list of all the elements in the selected node
-                XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                    .SelectedNode.FullPath.ToString()))
-                    .ParentNode.ChildNodes;
+            /*
+            int count = 0;
 
-                nl[xmlTreeview.SelectedNode.Index]
-                    .AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));
+            foreach (XmlElement bob in xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
+                .SelectedNode.FullPath.ToString())).ChildNodes.OfType<XmlElement>())
+                if (bob.Name == "")
+                    count++;
+
+            
+
+            if (count > 0)
+                MessageBox.Show("More than one of these!");
+            */
+
+            nl[xmlTreeview.SelectedNode.Index]
+                .AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));
                                 
               
-            }
-
                     
     
             updateTreeviewXml();
@@ -358,10 +382,11 @@ namespace xmlStructureEditor
             {
                 nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
                    .SelectedNode.Parent.FullPath.ToString()))
-                   .ParentNode.ChildNodes;
+                      .ParentNode.ChildNodes;
                 
                 nl[xmlTreeview.SelectedNode.Parent.Index]
-                    .RemoveChild(nl[xmlTreeview.SelectedNode.Parent.Index].FirstChild);
+                    .RemoveChild(nl[xmlTreeview.SelectedNode.Parent.Index].FirstChild);                               
+                                                
 
                 xmlTreeview.SelectedNode.Remove();
                 
@@ -453,6 +478,19 @@ namespace xmlStructureEditor
 
             updateTreeviewXml();
             updateRtbXml();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            genTreeTags gen = new genTreeTags();
+            gen.TraverseTreeView(xmlTreeview);
+
+
+
+            XmlNode ele = xmlDoc.SelectSingleNode("/catalog/book[10]/description[0]");
+            MessageBox.Show("Done");
+
+
         }
 
 
