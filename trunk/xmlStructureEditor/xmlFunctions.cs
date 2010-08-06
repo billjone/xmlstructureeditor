@@ -59,6 +59,8 @@ namespace xmlStructureEditor
                 newTreeNode.Text = "ATTRIBUTE: " + xmlNode.Name;
                 break;
             case XmlNodeType.Text:
+                newTreeNode.Text = "[" + xmlNode.Value + "]";
+                break;
             case XmlNodeType.CDATA:
                 newTreeNode.Text = xmlNode.Value;
                 break;
