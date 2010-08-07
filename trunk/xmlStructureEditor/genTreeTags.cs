@@ -25,7 +25,7 @@ namespace xmlStructureEditor
         public genTreeTags(TreeView tview)
         {
             for (int k = 0; k < tview.Nodes.Count; k++)
-            {
+            {                
                 int count = 0;
                 for (int x = 0; x <= k; x++)            
                     if (tview.Nodes[x].Text == tview.Nodes[k].Text)
