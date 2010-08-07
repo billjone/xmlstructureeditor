@@ -321,32 +321,11 @@ namespace xmlStructureEditor
 
         private void tsbtnDelete_Click(object sender, EventArgs e) // change this to be more modular, i.e. use functions
         {
-            XmlNodeList nl;
-
-            /*
-             * If targeted node = Element (contains <>); remove the element
-             * If targeted node = Attribute, get collection of attributes, then remove the correct one (index)
-             * If targeted node = Data, .InnerText = "";
-             * 
-             * ez
-            */
-
             if (xmlTreeview.SelectedNode.FullPath.ToString().EndsWith("]") && 
                 !xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.Parent.FullPath.ToString()).Contains("ATTRIBUTE"))
             {
-               // nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                //   .SelectedNode.Parent.FullPath.ToString()))
-                 //     .ParentNode.ChildNodes;
-
-                xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).ParentNode.RemoveChild(
-                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).FirstChild);
-                
-//                nl[xmlTreeview.SelectedNode.Parent.Index]
- //                   .RemoveChild(nl[xmlTreeview.SelectedNode.Parent.Index].FirstChild);                               
-                                                
-
-   //             xmlTreeview.SelectedNode.Remove();
-                
+                xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).RemoveChild(
+                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).FirstChild);   
 
             }
             else if (xmlTreeview.SelectedNode.FullPath.ToString().Contains("ATTRIBUTE")) // REMOVE ATTRIBUTE CODE
@@ -357,28 +336,38 @@ namespace xmlStructureEditor
 
                 if (xmlTreeview.SelectedNode.Parent.FullPath.Contains("ATTRIBUTE"))
                 {
-                    xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                 .SelectedNode.Parent.Parent.FullPath.ToString()))
+                    xmlDoc.SelectSingleNode(xmlTreeview
+                 .SelectedNode.Parent.Parent.Tag.ToString())
                  .Attributes.RemoveNamedItem(xmlTreeview.SelectedNode.Parent.Text.Replace("ATTRIBUTE: ", ""));
                 }
                 else
                 {
                     // if SelectedNode.parent doesn't contain attribute then you're on the attribute parent element!
-                    xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                      .SelectedNode.Parent.FullPath.ToString()))
+                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString())
                       .Attributes.RemoveNamedItem(xmlTreeview.SelectedNode.Text.Replace("ATTRIBUTE: ", ""));
                 }
-                
+            }
+            else if (xmlTreeview.SelectedNode.Tag.ToString().Contains("!--")) // if it's a comment, it has <!-- tags.
+            {
+                string cmt = xmlTreeview.SelectedNode.FullPath.ToString()
+                    .Replace(xmlTreeview.SelectedNode.Parent.FullPath.ToString(), "")
+                    .Replace("<!--", "")
+                    .Replace("-->", "")
+                    .Replace("\\", "");
+                // get Comment name                
+                XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).ChildNodes;
+
+                foreach (XmlNode n in nl)
+                    if (n.Value == cmt && n.NodeType == XmlNodeType.Comment)
+                    {
+                        //MessageBox.Show("Name: " + n.Name + " Value: " + n.Value + " Type: " + n.NodeType.ToString());
+                        xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).RemoveChild(n);
+
+                    }
 
             }
             else
             {
-
-
-
-
-
-
                 switch (xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).NodeType)
                 {
                     case XmlNodeType.ProcessingInstruction:
@@ -391,7 +380,6 @@ namespace xmlStructureEditor
                     case XmlNodeType.CDATA:                        
                         break;
                     case XmlNodeType.Comment:
-
                         break;
                 }
             }
@@ -437,6 +425,8 @@ namespace xmlStructureEditor
 
 
         }
+
+        
 
 
     }
