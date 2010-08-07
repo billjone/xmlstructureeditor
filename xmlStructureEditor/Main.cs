@@ -143,11 +143,50 @@ namespace xmlStructureEditor
             
         }
 
+        private bool haveParent(TreeView tv)
+        {
+            try
+            {
+                int o = xmlTreeview.SelectedNode.Parent.Index;
+                if (xmlTreeview.SelectedNode.Parent.Text.Contains("#document"))
+                    return false;
+                return true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return false;
+            }
+        }
+
+      
         void xmlTreeview_AfterSelect(object sender, TreeViewEventArgs e)
         {
             tsStatusLabel.Text = xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.FullPath.ToString());            
             tsStatusLabelClear.Text = xmlTreeview.SelectedNode.FullPath.ToString();
             tsLabelnodeIndex.Text = xmlTreeview.SelectedNode.Tag.ToString();
+
+
+            if (haveParent(xmlTreeview))
+            {
+                XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).ChildNodes;
+                switch (nl[xmlTreeview.SelectedNode.Index].NodeType)
+                {
+                    case XmlNodeType.XmlDeclaration:
+                        MessageBox.Show("xml dec!");
+                        break;
+                    case XmlNodeType.Element:
+                        MessageBox.Show("xml ele!");
+                        break;
+                    case XmlNodeType.CDATA:
+                        MessageBox.Show("xml cdata!");
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Parent node selected!");
+            }
         }
 
 
@@ -164,7 +203,9 @@ namespace xmlStructureEditor
                 tsbtnRootElement.Enabled = false;
                 tsbtnAddElement.Enabled = true;
             }
+            
 
+           
 
 
 
@@ -224,33 +265,12 @@ namespace xmlStructureEditor
                               
             frmElement.ShowDialog();
 
-
-            
-
+                        
             // get a list of all the elements in the selected node
             XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
                 .SelectedNode.FullPath.ToString()))
                 .ParentNode.ChildNodes;
-
-            
-            
-            
-
-
-
-            /*
-            int count = 0;
-
-            foreach (XmlElement bob in xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                .SelectedNode.FullPath.ToString())).ChildNodes.OfType<XmlElement>())
-                if (bob.Name == "")
-                    count++;
-
-            
-
-            if (count > 0)
-                MessageBox.Show("More than one of these!");
-            */
+                    
 
             nl[xmlTreeview.SelectedNode.Index]
                 .AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));
@@ -353,33 +373,38 @@ namespace xmlStructureEditor
                     .Replace(xmlTreeview.SelectedNode.Parent.FullPath.ToString(), "")
                     .Replace("<!--", "")
                     .Replace("-->", "")
-                    .Replace("\\", "");
-                // get Comment name                
-                XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).ChildNodes;
-
-                foreach (XmlNode n in nl)
+                    .Replace("\\", "");      
+                
+                foreach (XmlNode n in xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).ChildNodes)
                     if (n.Value == cmt && n.NodeType == XmlNodeType.Comment)
-                    {
-                        //MessageBox.Show("Name: " + n.Name + " Value: " + n.Value + " Type: " + n.NodeType.ToString());
-                        xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).RemoveChild(n);
-
-                    }
-
+                        xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).RemoveChild(n);                
             }
+            else if (xmlTreeview.SelectedNode.FullPath.ToString().Contains("CDATA")) // if it's a comment, it has <!-- tags.
+            {
+                string cdata = xmlTreeview.SelectedNode.FullPath.ToString()
+                    .Replace(xmlTreeview.SelectedNode.Parent.FullPath.ToString(), "")
+                    .Replace("CDATA: ", "")
+                    .Replace("\\", "");
+
+                foreach (XmlNode n in xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).ChildNodes)
+                    if (n.Value == cdata && n.NodeType == XmlNodeType.CDATA)
+                        xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).RemoveChild(n);
+            }
+
             else
             {
-                switch (xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).NodeType)
+                XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).ChildNodes;
+                switch (nl[xmlTreeview.SelectedNode.Index].NodeType)
                 {
                     case XmlNodeType.ProcessingInstruction:
                     case XmlNodeType.XmlDeclaration:
+                        MessageBox.Show("xml dec!");    
                         break;                    
                     case XmlNodeType.Element:
                         xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString())
                             .ParentNode.RemoveChild(xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()));
                         break;                                     
                     case XmlNodeType.CDATA:                        
-                        break;
-                    case XmlNodeType.Comment:
                         break;
                 }
             }
@@ -420,8 +445,28 @@ namespace xmlStructureEditor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
-            MessageBox.Show(xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText);
+            XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).ChildNodes;
+            switch (nl[xmlTreeview.SelectedNode.Index].NodeType)
+            {
+                case XmlNodeType.Element:
+                    MessageBox.Show("ele");
+                    break;
+                case XmlNodeType.XmlDeclaration:
+                    MessageBox.Show("xml dec!");
+                    break;
+                case XmlNodeType.CDATA:
+                    MessageBox.Show("Cdata!");
+                    break;
+                case XmlNodeType.Comment:
+                    MessageBox.Show("Comment!");
+                    break;
+                case XmlNodeType.Attribute:
+                    MessageBox.Show("Attribute!");
+                    break;
+                case XmlNodeType.Text:
+                    MessageBox.Show("Data!");
+                    break;
+            }
 
 
         }
