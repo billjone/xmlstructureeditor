@@ -284,57 +284,37 @@ namespace xmlStructureEditor
             // Grabs the location of the targetted node. Need to add checks to see if this is a valid target
             // for an element. E.g. an attribute would NOT be valid. Checks need to be added here!
 
-    
-            if (xmlTreeview.SelectedNode.FullPath.ToString().EndsWith(">")) // if an element is selected, take the main path
-            {
-                 XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                    .SelectedNode.FullPath.ToString()))
-                    .ParentNode.ChildNodes;
-                 
-                string it = nl[xmlTreeview.SelectedNode.Index].InnerText;
+            addData frm = new addData();
+                
 
-                addData frm = new addData();
+            if (xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).NodeType.Equals(XmlNodeType.Element))
+            {   
+                if (xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText.Length > 0) // if there is data already, pass it to the form
+                    frm.setData(xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText);
 
-                if (nl[xmlTreeview.SelectedNode.Index].InnerText.Length > 0) // if there is data already, pass it to the form
-                    frm.setData(nl[xmlTreeview.SelectedNode.Index].InnerText);
+                frm.ShowDialog();
 
-                 frm.ShowDialog();
-
-                 if (!nl[xmlTreeview.SelectedNode.Index].InnerText.Equals(frm.getData()))
-                 {
-
-                     XmlText txtData = xmlDoc.CreateTextNode(frm.getData());                     
-                     nl[xmlTreeview.SelectedNode.Index].AppendChild(txtData);
-                   //  nl[xmlTreeview.SelectedNode.Index].InnerText = frm.getData(); // update the data ONLY if the data is new                              
-
-                 }
+                if (!xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText.Equals(frm.getData()))
+                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText = "";
+                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString())
+                      .AppendChild(xmlDoc.CreateTextNode(frm.getData()));                      
 
             }
             else
             {
-
-                XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                    .SelectedNode.Parent.FullPath.ToString()))
-                    .ParentNode.ChildNodes;
-
-                string it = nl[xmlTreeview.SelectedNode.Parent.Index].InnerText;
-
-                addData frm = new addData();
-
-                if (nl[xmlTreeview.SelectedNode.Parent.Index].InnerText.Length > 0) // if there is data already, pass it to the form
-                    frm.setData(nl[xmlTreeview.SelectedNode.Parent.Index].InnerText);
+                if (xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).InnerText.Length > 0) // if there is data already, pass it to the form
+                    frm.setData(xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).InnerText);
 
                 frm.ShowDialog();
 
-                if (!nl[xmlTreeview.SelectedNode.Parent.Index].InnerText.Equals(frm.getData()))
-                {
-                    XmlText txtData = xmlDoc.CreateTextNode(frm.getData());
-                    nl[xmlTreeview.SelectedNode.Index].AppendChild(txtData);
-                }
-                 
+                if (!xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).InnerText.Equals(frm.getData()))
+                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString())
+                        .AppendChild(xmlDoc.CreateTextNode(frm.getData()));                      
+        
                
 
             }
+                 
                         
             
         }
