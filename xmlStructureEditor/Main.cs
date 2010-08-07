@@ -162,33 +162,76 @@ namespace xmlStructureEditor
       
         void xmlTreeview_AfterSelect(object sender, TreeViewEventArgs e)
         {
+
+
             tsStatusLabel.Text = xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.FullPath.ToString());            
             tsStatusLabelClear.Text = xmlTreeview.SelectedNode.FullPath.ToString();
             tsLabelnodeIndex.Text = xmlTreeview.SelectedNode.Tag.ToString();
 
+            XmlNodeType currentSelType = treeviewNodeType(xmlTreeview); // get type of element selected
 
-            if (haveParent(xmlTreeview))
+            tsbtnAddAttribute.Enabled = false;
+            tsbtnAddCDATA.Enabled = false;
+            tsbtnAddElement.Enabled = false;
+            tsbtnComment.Enabled = false;
+            tsbtnAddData.Enabled = false;
+            tsbtnDelete.Enabled = false;   
+
+            if (currentSelType.Equals(XmlNodeType.Element))
             {
-                XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).ChildNodes;
-                switch (nl[xmlTreeview.SelectedNode.Index].NodeType)
-                {
-                    case XmlNodeType.XmlDeclaration:
-                        MessageBox.Show("xml dec!");
-                        break;
-                    case XmlNodeType.Element:
-                        MessageBox.Show("xml ele!");
-                        break;
-                    case XmlNodeType.CDATA:
-                        MessageBox.Show("xml cdata!");
-                        break;
-                }
+                tsbtnAddAttribute.Enabled = true;
+                tsbtnAddCDATA.Enabled = true;
+                tsbtnAddElement.Enabled = true;
+                tsbtnComment.Enabled = true;
+                tsbtnAddData.Enabled = true;
+                tsbtnDelete.Enabled = true;                
             }
-            else
+            if (currentSelType.Equals(XmlNodeType.Attribute))
+            {                
+                tsbtnDelete.Enabled = true;
+            }
+            if (currentSelType.Equals(XmlNodeType.CDATA))
             {
-                MessageBox.Show("Parent node selected!");
+                tsbtnAddCDATA.Enabled = true;
+                tsbtnDelete.Enabled = true;
             }
+            if (currentSelType.Equals(XmlNodeType.Text))
+            {
+                tsbtnAddData.Enabled = true;
+                tsbtnDelete.Enabled = true;
+            }
+            if (currentSelType.Equals(XmlNodeType.Comment))
+            {
+                tsbtnComment.Enabled = true;
+                tsbtnDelete.Enabled = true;
+            }
+
+            
         }
 
+        XmlNodeType treeviewNodeType(TreeView tview)
+        {
+            if (tview.SelectedNode.Text.Contains("<!--"))
+                return XmlNodeType.Comment;
+            else if (tview.SelectedNode.Text.EndsWith(">"))
+                return XmlNodeType.Element;
+
+            if (tview.SelectedNode.Text.EndsWith("]") && !tview.SelectedNode.Parent.Text.Contains("ATTRIBUTE: "))
+                return XmlNodeType.Text;
+
+            if (haveParent(tview) && tview.SelectedNode.Parent.Text.Contains("ATTRIBUTE: ") || tview.SelectedNode.Text.Contains("ATTRIBUTE: "))
+                return XmlNodeType.Attribute;
+            
+            if (tview.SelectedNode.Text.Contains("CDATA: "))
+                return XmlNodeType.CDATA;
+
+            
+
+           
+
+            return XmlNodeType.Notation;
+            
+        }
 
         void Treeview_Paint(object sender, PaintEventArgs e)
         {            
@@ -300,44 +343,45 @@ namespace xmlStructureEditor
 
         private void tsbtnAddData_Click(object sender, EventArgs e)
         {
-            
-            // Grabs the location of the targetted node. Need to add checks to see if this is a valid target
-            // for an element. E.g. an attribute would NOT be valid. Checks need to be added here!
-
             addData frm = new addData();
-                
 
-            if (xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).NodeType.Equals(XmlNodeType.Element))
-            {   
-                if (xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText.Length > 0) // if there is data already, pass it to the form
-                    frm.setData(xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText);
+            XmlNode parentDataNode = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString());
+
+            if (treeviewNodeType(xmlTreeview).Equals(XmlNodeType.Element))
+            {
+                XmlNode addDataNode = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString());
+                // Grabs the location of the targetted node. Need to add checks to see if this is a valid target
+                // for an element. E.g. an attribute would NOT be valid. Checks need to be added here!
+
+               
+
+
+                if (addDataNode.InnerText.Length > 0) // if there is data already, pass it to the form
+                    frm.setData(addDataNode.InnerText);
 
                 frm.ShowDialog();
 
-                if (!xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText.Equals(frm.getData()))
-                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString()).InnerText = "";
-                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString())
-                      .AppendChild(xmlDoc.CreateTextNode(frm.getData()));                      
+                if (!addDataNode.InnerText.Equals(frm.getData()) && !addDataNode.InnerText.Equals(""))
+                    addDataNode.InnerText = "";
 
+                addDataNode.AppendChild(xmlDoc.CreateTextNode(frm.getData()));
             }
             else
             {
-                if (xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).InnerText.Length > 0) // if there is data already, pass it to the form
-                    frm.setData(xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).InnerText);
+
+
+                if (parentDataNode.InnerText.Length > 0) // if there is data already, pass it to the form
+                    frm.setData(parentDataNode.InnerText);
 
                 frm.ShowDialog();
 
-                if (!xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString()).InnerText.Equals(frm.getData()))
-                    xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString())
-                        .AppendChild(xmlDoc.CreateTextNode(frm.getData()));                      
-        
-               
-
+                if (!parentDataNode.InnerText.Equals(frm.getData()))
+                    parentDataNode.AppendChild(xmlDoc.CreateTextNode(frm.getData()));        
             }
-                 
-                        
-            
+
         }
+            
+        
 
         private void tsbtnDelete_Click(object sender, EventArgs e) // change this to be more modular, i.e. use functions
         {
