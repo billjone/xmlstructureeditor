@@ -153,8 +153,7 @@ namespace xmlStructureEditor
                 return true;
             }
             catch(Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
+            {               
                 return false;
             }
         }
@@ -163,6 +162,11 @@ namespace xmlStructureEditor
         void xmlTreeview_AfterSelect(object sender, TreeViewEventArgs e)
         {
 
+            if (xmlTreeview.SelectedNode.Text.Equals("#document"))
+                xmlTreeview.SelectedNode.Tag = "/";
+
+            if (haveParent(xmlTreeview) && xmlTreeview.SelectedNode.Parent.Text.Equals("#document"))
+                xmlTreeview.SelectedNode.Parent.Tag = "/";
 
             tsStatusLabel.Text = xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.FullPath.ToString());            
             tsStatusLabelClear.Text = xmlTreeview.SelectedNode.FullPath.ToString();
@@ -345,6 +349,7 @@ namespace xmlStructureEditor
         {
             addData frm = new addData();
 
+
             XmlNode parentDataNode = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Parent.Tag.ToString());
 
             if (treeviewNodeType(xmlTreeview).Equals(XmlNodeType.Element))
@@ -362,9 +367,9 @@ namespace xmlStructureEditor
                 frm.ShowDialog();
 
                 if (!addDataNode.InnerText.Equals(frm.getData()) && !addDataNode.InnerText.Equals(""))
-                    addDataNode.InnerText = "";
-
-                addDataNode.AppendChild(xmlDoc.CreateTextNode(frm.getData()));
+                    addDataNode.InnerText = frm.getData();
+                else
+                    addDataNode.AppendChild(xmlDoc.CreateTextNode(frm.getData()));
             }
             else
             {
@@ -375,7 +380,9 @@ namespace xmlStructureEditor
 
                 frm.ShowDialog();
 
-                if (!parentDataNode.InnerText.Equals(frm.getData()))
+                if (!parentDataNode.InnerText.Equals(frm.getData()) && !parentDataNode.InnerText.Equals(""))
+                    parentDataNode.InnerText = frm.getData();
+                else
                     parentDataNode.AppendChild(xmlDoc.CreateTextNode(frm.getData()));        
             }
 
@@ -470,7 +477,7 @@ namespace xmlStructureEditor
             XmlCDataSection cdata = xmlDoc.CreateCDataSection(frm.getCdata());
 
             nl[xmlTreeview.SelectedNode.Index].AppendChild(cdata);
-        ;
+        
         }
 
         private void tsbtnComment_Click(object sender, EventArgs e)
