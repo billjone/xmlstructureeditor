@@ -66,8 +66,8 @@
             this.tsLabelnodeIndex = new System.Windows.Forms.ToolStripStatusLabel();
             this.mainTabs = new System.Windows.Forms.TabControl();
             this.tabXML = new System.Windows.Forms.TabPage();
+            this.xmlBrowserWindow = new System.Windows.Forms.WebBrowser();
             this.xmlTreeview = new NewControls.TreeViewWithPaint();
-            this.rtbXML = new System.Windows.Forms.RichTextBox();
             this.tabSchema = new System.Windows.Forms.TabPage();
             this.schemaTreeview = new NewControls.TreeViewWithPaint();
             this.rtbSchema = new System.Windows.Forms.RichTextBox();
@@ -79,7 +79,6 @@
             this.tsbtnAddData = new System.Windows.Forms.ToolStripButton();
             this.tsbtnAddCDATA = new System.Windows.Forms.ToolStripButton();
             this.tsbtnComment = new System.Windows.Forms.ToolStripButton();
-            this.button1 = new System.Windows.Forms.Button();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusBar.SuspendLayout();
             this.mainTabs.SuspendLayout();
@@ -190,6 +189,7 @@
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -332,7 +332,7 @@
             this.listErrors.FormattingEnabled = true;
             this.listErrors.Location = new System.Drawing.Point(37, 611);
             this.listErrors.Name = "listErrors";
-            this.listErrors.Size = new System.Drawing.Size(913, 95);
+            this.listErrors.Size = new System.Drawing.Size(1060, 95);
             this.listErrors.TabIndex = 1;
             // 
             // mainStatusBar
@@ -380,8 +380,8 @@
             // 
             // tabXML
             // 
+            this.tabXML.Controls.Add(this.xmlBrowserWindow);
             this.tabXML.Controls.Add(this.xmlTreeview);
-            this.tabXML.Controls.Add(this.rtbXML);
             this.tabXML.Location = new System.Drawing.Point(4, 22);
             this.tabXML.Name = "tabXML";
             this.tabXML.Padding = new System.Windows.Forms.Padding(3);
@@ -390,25 +390,23 @@
             this.tabXML.Text = "XML";
             this.tabXML.UseVisualStyleBackColor = true;
             // 
+            // xmlBrowserWindow
+            // 
+            this.xmlBrowserWindow.Location = new System.Drawing.Point(315, 6);
+            this.xmlBrowserWindow.MinimumSize = new System.Drawing.Size(20, 20);
+            this.xmlBrowserWindow.Name = "xmlBrowserWindow";
+            this.xmlBrowserWindow.Size = new System.Drawing.Size(735, 538);
+            this.xmlBrowserWindow.TabIndex = 3;
+            // 
             // xmlTreeview
             // 
             this.xmlTreeview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
+            this.xmlTreeview.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.xmlTreeview.Location = new System.Drawing.Point(3, 3);
             this.xmlTreeview.Name = "xmlTreeview";
             this.xmlTreeview.Size = new System.Drawing.Size(305, 541);
             this.xmlTreeview.TabIndex = 2;
-            // 
-            // rtbXML
-            // 
-            this.rtbXML.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbXML.Location = new System.Drawing.Point(314, 3);
-            this.rtbXML.Name = "rtbXML";
-            this.rtbXML.Size = new System.Drawing.Size(739, 541);
-            this.rtbXML.TabIndex = 1;
-            this.rtbXML.Text = "";
             // 
             // tabSchema
             // 
@@ -536,22 +534,11 @@
             this.tsbtnComment.Text = "Add Comment";
             this.tsbtnComment.Click += new System.EventHandler(this.tsbtnComment_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(1014, 643);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1113, 737);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.mainTabs);
             this.Controls.Add(this.mainStatusBar);
@@ -613,7 +600,6 @@
         private System.Windows.Forms.TabControl mainTabs;
         private System.Windows.Forms.TabPage tabXML;
         private System.Windows.Forms.TabPage tabSchema;
-        private System.Windows.Forms.RichTextBox rtbXML;
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.RichTextBox rtbSchema;
         private System.Windows.Forms.ToolStripButton tsbtnRootElement;
@@ -627,7 +613,7 @@
         private System.Windows.Forms.ToolStripButton tsbtnAddCDATA;
         private System.Windows.Forms.ToolStripButton tsbtnComment;
         private System.Windows.Forms.ToolStripStatusLabel tsLabelnodeIndex;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.WebBrowser xmlBrowserWindow;
     }
 }
 
