@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace xmlStructureEditor
 {
@@ -52,21 +53,26 @@ namespace xmlStructureEditor
     {
 
              TreeNode newTreeNode = treeNodes.Add(xmlNode.Name);
+            
 
             switch (xmlNode.NodeType)
             {
                 case XmlNodeType.ProcessingInstruction:
                 case XmlNodeType.XmlDeclaration:
+                    newTreeNode.ForeColor = Color.Blue;
                     newTreeNode.Text = "<?" + xmlNode.Name + " " +
                       xmlNode.Value + "?>";
                     break;
                 case XmlNodeType.Element:
+                    newTreeNode.ForeColor = Color.Maroon;
                     newTreeNode.Text = "<" + xmlNode.Name + ">";
                     break;
                 case XmlNodeType.Attribute:
+                    newTreeNode.ForeColor = Color.Pink;
                     newTreeNode.Text = "ATTRIBUTE: " + xmlNode.Name;
                     break;
                 case XmlNodeType.Text:
+                    newTreeNode.NodeFont = new Font("Verdana", 10, FontStyle.Bold);
                     newTreeNode.Text = "[" + xmlNode.Value + "]";
                     break;
                 case XmlNodeType.CDATA:
@@ -102,6 +108,8 @@ namespace xmlStructureEditor
 
         // return "/" + path.Replace(@"\", "/"); <-- old tree return
     }
+
+    
     
 }
    }

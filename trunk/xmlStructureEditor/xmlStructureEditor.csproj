@@ -88,6 +88,7 @@
     <Compile Include="addView\addRootElement.Designer.cs">
       <DependentUpon>addRootElement.cs</DependentUpon>
     </Compile>
+    <Compile Include="calcIndex.cs" />
     <Compile Include="genTreeTags.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
