@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,6 +80,8 @@
             this.tsbtnAddData = new System.Windows.Forms.ToolStripButton();
             this.tsbtnAddCDATA = new System.Windows.Forms.ToolStripButton();
             this.tsbtnComment = new System.Windows.Forms.ToolStripButton();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusBar.SuspendLayout();
             this.mainTabs.SuspendLayout();
@@ -332,7 +335,7 @@
             this.listErrors.FormattingEnabled = true;
             this.listErrors.Location = new System.Drawing.Point(37, 611);
             this.listErrors.Name = "listErrors";
-            this.listErrors.Size = new System.Drawing.Size(1060, 95);
+            this.listErrors.Size = new System.Drawing.Size(795, 95);
             this.listErrors.TabIndex = 1;
             // 
             // mainStatusBar
@@ -534,11 +537,22 @@
             this.tsbtnComment.Text = "Add Comment";
             this.tsbtnComment.Click += new System.EventHandler(this.tsbtnComment_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(916, 633);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1113, 737);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.mainTabs);
             this.Controls.Add(this.mainStatusBar);
@@ -614,6 +628,8 @@
         private System.Windows.Forms.ToolStripButton tsbtnComment;
         private System.Windows.Forms.ToolStripStatusLabel tsLabelnodeIndex;
         private System.Windows.Forms.WebBrowser xmlBrowserWindow;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button button1;
     }
 }
 
