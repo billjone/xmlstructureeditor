@@ -70,8 +70,6 @@
             this.xmlBrowserWindow = new System.Windows.Forms.WebBrowser();
             this.xmlTreeview = new NewControls.TreeViewWithPaint();
             this.tabSchema = new System.Windows.Forms.TabPage();
-            this.schemaTreeview = new NewControls.TreeViewWithPaint();
-            this.rtbSchema = new System.Windows.Forms.RichTextBox();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.tsbtnRootElement = new System.Windows.Forms.ToolStripButton();
             this.tsbtnAddElement = new System.Windows.Forms.ToolStripButton();
@@ -81,13 +79,48 @@
             this.tsbtnAddCDATA = new System.Windows.Forms.ToolStripButton();
             this.tsbtnComment = new System.Windows.Forms.ToolStripButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.button1 = new System.Windows.Forms.Button();
+            this.gbSelectType = new System.Windows.Forms.GroupBox();
+            this.cbGlobalTypes = new System.Windows.Forms.ComboBox();
+            this.cbSimpleTypes = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.edSchemaErrors = new System.Windows.Forms.TextBox();
+            this.edSchema = new System.Windows.Forms.TextBox();
+            this.tvSchema = new System.Windows.Forms.TreeView();
+            this.tvcmSchema = new System.Windows.Forms.ContextMenu();
+            this.mnuAddElement = new System.Windows.Forms.MenuItem();
+            this.mnuAddSimpleType = new System.Windows.Forms.MenuItem();
+            this.mnuAddComplexType = new System.Windows.Forms.MenuItem();
+            this.mnuAddAttribute = new System.Windows.Forms.MenuItem();
+            this.menuItem9 = new System.Windows.Forms.MenuItem();
+            this.menuItem5 = new System.Windows.Forms.MenuItem();
+            this.mnuAddAnnotation = new System.Windows.Forms.MenuItem();
+            this.mnuAddDocumentation = new System.Windows.Forms.MenuItem();
+            this.mnuAddAppInfo = new System.Windows.Forms.MenuItem();
+            this.menuItem4 = new System.Windows.Forms.MenuItem();
+            this.menuItem7 = new System.Windows.Forms.MenuItem();
+            this.mnuFacetEnumeration = new System.Windows.Forms.MenuItem();
+            this.mnuFacetMaxExclusive = new System.Windows.Forms.MenuItem();
+            this.mnuFacetMaxInclusive = new System.Windows.Forms.MenuItem();
+            this.mnuFacetMinExclusive = new System.Windows.Forms.MenuItem();
+            this.mnuFacetMinInclusive = new System.Windows.Forms.MenuItem();
+            this.mnuFacetNumeric = new System.Windows.Forms.MenuItem();
+            this.mnuFacetFractionDigits = new System.Windows.Forms.MenuItem();
+            this.mnuFacetLength = new System.Windows.Forms.MenuItem();
+            this.mnuFacetMaxLength = new System.Windows.Forms.MenuItem();
+            this.mnuFacetMinLength = new System.Windows.Forms.MenuItem();
+            this.mnuFacetTotalDigits = new System.Windows.Forms.MenuItem();
+            this.mnuFacetPattern = new System.Windows.Forms.MenuItem();
+            this.mnuFacetWhiteSpace = new System.Windows.Forms.MenuItem();
+            this.menuItem6 = new System.Windows.Forms.MenuItem();
+            this.mnuRemoveNode = new System.Windows.Forms.MenuItem();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusBar.SuspendLayout();
             this.mainTabs.SuspendLayout();
             this.tabXML.SuspendLayout();
             this.tabSchema.SuspendLayout();
             this.toolStrip.SuspendLayout();
+            this.gbSelectType.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -213,8 +246,9 @@
             // 
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
             this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.undoToolStripMenuItem.Text = "&Undo";
+            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
             // redoToolStripMenuItem
             // 
@@ -395,6 +429,9 @@
             // 
             // xmlBrowserWindow
             // 
+            this.xmlBrowserWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.xmlBrowserWindow.Location = new System.Drawing.Point(315, 6);
             this.xmlBrowserWindow.MinimumSize = new System.Drawing.Size(20, 20);
             this.xmlBrowserWindow.Name = "xmlBrowserWindow";
@@ -413,8 +450,10 @@
             // 
             // tabSchema
             // 
-            this.tabSchema.Controls.Add(this.schemaTreeview);
-            this.tabSchema.Controls.Add(this.rtbSchema);
+            this.tabSchema.Controls.Add(this.gbSelectType);
+            this.tabSchema.Controls.Add(this.edSchemaErrors);
+            this.tabSchema.Controls.Add(this.edSchema);
+            this.tabSchema.Controls.Add(this.tvSchema);
             this.tabSchema.Location = new System.Drawing.Point(4, 22);
             this.tabSchema.Name = "tabSchema";
             this.tabSchema.Padding = new System.Windows.Forms.Padding(3);
@@ -422,26 +461,6 @@
             this.tabSchema.TabIndex = 1;
             this.tabSchema.Text = "Schema";
             this.tabSchema.UseVisualStyleBackColor = true;
-            // 
-            // schemaTreeview
-            // 
-            this.schemaTreeview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
-            this.schemaTreeview.Location = new System.Drawing.Point(3, 4);
-            this.schemaTreeview.Name = "schemaTreeview";
-            this.schemaTreeview.Size = new System.Drawing.Size(183, 541);
-            this.schemaTreeview.TabIndex = 2;
-            // 
-            // rtbSchema
-            // 
-            this.rtbSchema.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbSchema.Location = new System.Drawing.Point(192, 4);
-            this.rtbSchema.Name = "rtbSchema";
-            this.rtbSchema.Size = new System.Drawing.Size(863, 541);
-            this.rtbSchema.TabIndex = 1;
-            this.rtbSchema.Text = "";
             // 
             // toolStrip
             // 
@@ -537,22 +556,306 @@
             this.tsbtnComment.Text = "Add Comment";
             this.tsbtnComment.Click += new System.EventHandler(this.tsbtnComment_Click);
             // 
-            // button1
+            // gbSelectType
             // 
-            this.button1.Location = new System.Drawing.Point(916, 633);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.gbSelectType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.gbSelectType.Controls.Add(this.cbGlobalTypes);
+            this.gbSelectType.Controls.Add(this.cbSimpleTypes);
+            this.gbSelectType.Controls.Add(this.label2);
+            this.gbSelectType.Controls.Add(this.label1);
+            this.gbSelectType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbSelectType.Location = new System.Drawing.Point(12, 438);
+            this.gbSelectType.Name = "gbSelectType";
+            this.gbSelectType.Size = new System.Drawing.Size(280, 96);
+            this.gbSelectType.TabIndex = 7;
+            this.gbSelectType.TabStop = false;
+            this.gbSelectType.Text = "Select Type";
+            // 
+            // cbGlobalTypes
+            // 
+            this.cbGlobalTypes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbGlobalTypes.Location = new System.Drawing.Point(88, 56);
+            this.cbGlobalTypes.Name = "cbGlobalTypes";
+            this.cbGlobalTypes.Size = new System.Drawing.Size(168, 21);
+            this.cbGlobalTypes.Sorted = true;
+            this.cbGlobalTypes.TabIndex = 3;
+            // 
+            // cbSimpleTypes
+            // 
+            this.cbSimpleTypes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbSimpleTypes.Items.AddRange(new object[] {
+            "anyURI",
+            "base64Binary",
+            "boolean",
+            "byte",
+            "date",
+            "dateTime",
+            "decimal",
+            "double",
+            "duration",
+            "ENTITIY",
+            "float",
+            "gDay",
+            "gMonth",
+            "gMonthDay",
+            "gYear",
+            "gYearMonth",
+            "hexBinary",
+            "ID",
+            "IDREF",
+            "imteger",
+            "int",
+            "language",
+            "long",
+            "Name",
+            "NCName",
+            "negativeInteger",
+            "NMTOKEN",
+            "nonNegativeInteger",
+            "nonPositiveInteger",
+            "normalizedString",
+            "NOTATION",
+            "positiveInteger",
+            "QName",
+            "short",
+            "string",
+            "time",
+            "token",
+            "unsignedByte",
+            "unsignedInt",
+            "unsignedLong",
+            "unsignedShort"});
+            this.cbSimpleTypes.Location = new System.Drawing.Point(88, 24);
+            this.cbSimpleTypes.Name = "cbSimpleTypes";
+            this.cbSimpleTypes.Size = new System.Drawing.Size(168, 21);
+            this.cbSimpleTypes.Sorted = true;
+            this.cbSimpleTypes.TabIndex = 2;
+            // 
+            // label2
+            // 
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(8, 58);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(80, 16);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Global Types:";
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(8, 26);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(80, 16);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Simple Types:";
+            // 
+            // edSchemaErrors
+            // 
+            this.edSchemaErrors.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.edSchemaErrors.HideSelection = false;
+            this.edSchemaErrors.Location = new System.Drawing.Point(300, 446);
+            this.edSchemaErrors.Multiline = true;
+            this.edSchemaErrors.Name = "edSchemaErrors";
+            this.edSchemaErrors.ReadOnly = true;
+            this.edSchemaErrors.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.edSchemaErrors.Size = new System.Drawing.Size(750, 88);
+            this.edSchemaErrors.TabIndex = 6;
+            // 
+            // edSchema
+            // 
+            this.edSchema.AcceptsReturn = true;
+            this.edSchema.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.edSchema.HideSelection = false;
+            this.edSchema.Location = new System.Drawing.Point(300, 6);
+            this.edSchema.Multiline = true;
+            this.edSchema.Name = "edSchema";
+            this.edSchema.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.edSchema.Size = new System.Drawing.Size(750, 432);
+            this.edSchema.TabIndex = 5;
+            this.edSchema.WordWrap = false;
+            // 
+            // tvSchema
+            // 
+            this.tvSchema.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.tvSchema.FullRowSelect = true;
+            this.tvSchema.HideSelection = false;
+            this.tvSchema.Location = new System.Drawing.Point(12, 6);
+            this.tvSchema.Name = "tvSchema";
+            this.tvSchema.Size = new System.Drawing.Size(280, 432);
+            this.tvSchema.TabIndex = 4;
+            // 
+            // tvcmSchema
+            // 
+            this.tvcmSchema.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuAddElement,
+            this.mnuAddSimpleType,
+            this.mnuAddComplexType,
+            this.mnuAddAttribute,
+            this.menuItem9,
+            this.menuItem5,
+            this.menuItem4,
+            this.menuItem7,
+            this.menuItem6,
+            this.mnuRemoveNode});
+            // 
+            // mnuAddElement
+            // 
+            this.mnuAddElement.Index = 0;
+            this.mnuAddElement.Text = "Element";
+            // 
+            // mnuAddSimpleType
+            // 
+            this.mnuAddSimpleType.Index = 1;
+            this.mnuAddSimpleType.Text = "Simple Type";
+            // 
+            // mnuAddComplexType
+            // 
+            this.mnuAddComplexType.Index = 2;
+            this.mnuAddComplexType.Text = "Complex Type";
+            // 
+            // mnuAddAttribute
+            // 
+            this.mnuAddAttribute.Index = 3;
+            this.mnuAddAttribute.Text = "Attribute";
+            // 
+            // menuItem9
+            // 
+            this.menuItem9.Index = 4;
+            this.menuItem9.Text = "-";
+            // 
+            // menuItem5
+            // 
+            this.menuItem5.Index = 5;
+            this.menuItem5.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuAddAnnotation,
+            this.mnuAddDocumentation,
+            this.mnuAddAppInfo});
+            this.menuItem5.Text = "Annotation";
+            // 
+            // mnuAddAnnotation
+            // 
+            this.mnuAddAnnotation.Index = 0;
+            this.mnuAddAnnotation.Text = "Annotation";
+            // 
+            // mnuAddDocumentation
+            // 
+            this.mnuAddDocumentation.Index = 1;
+            this.mnuAddDocumentation.Text = "Documentation";
+            // 
+            // mnuAddAppInfo
+            // 
+            this.mnuAddAppInfo.Index = 2;
+            this.mnuAddAppInfo.Text = "App Info";
+            // 
+            // menuItem4
+            // 
+            this.menuItem4.Index = 6;
+            this.menuItem4.Text = "-";
+            // 
+            // menuItem7
+            // 
+            this.menuItem7.Index = 7;
+            this.menuItem7.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuFacetEnumeration,
+            this.mnuFacetMaxExclusive,
+            this.mnuFacetMaxInclusive,
+            this.mnuFacetMinExclusive,
+            this.mnuFacetMinInclusive,
+            this.mnuFacetNumeric,
+            this.mnuFacetPattern,
+            this.mnuFacetWhiteSpace});
+            this.menuItem7.Text = "Facet";
+            // 
+            // mnuFacetEnumeration
+            // 
+            this.mnuFacetEnumeration.Index = 0;
+            this.mnuFacetEnumeration.Text = "Enumeration";
+            // 
+            // mnuFacetMaxExclusive
+            // 
+            this.mnuFacetMaxExclusive.Index = 1;
+            this.mnuFacetMaxExclusive.Text = "Max Exclusive";
+            // 
+            // mnuFacetMaxInclusive
+            // 
+            this.mnuFacetMaxInclusive.Index = 2;
+            this.mnuFacetMaxInclusive.Text = "Max Inclusive";
+            // 
+            // mnuFacetMinExclusive
+            // 
+            this.mnuFacetMinExclusive.Index = 3;
+            this.mnuFacetMinExclusive.Text = "Min Exclusive";
+            // 
+            // mnuFacetMinInclusive
+            // 
+            this.mnuFacetMinInclusive.Index = 4;
+            this.mnuFacetMinInclusive.Text = "Min Inclusive";
+            // 
+            // mnuFacetNumeric
+            // 
+            this.mnuFacetNumeric.Index = 5;
+            this.mnuFacetNumeric.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuFacetFractionDigits,
+            this.mnuFacetLength,
+            this.mnuFacetMaxLength,
+            this.mnuFacetMinLength,
+            this.mnuFacetTotalDigits});
+            this.mnuFacetNumeric.Text = "Numeric";
+            // 
+            // mnuFacetFractionDigits
+            // 
+            this.mnuFacetFractionDigits.Index = 0;
+            this.mnuFacetFractionDigits.Text = "Fraction Digits";
+            // 
+            // mnuFacetLength
+            // 
+            this.mnuFacetLength.Index = 1;
+            this.mnuFacetLength.Text = "Length";
+            // 
+            // mnuFacetMaxLength
+            // 
+            this.mnuFacetMaxLength.Index = 2;
+            this.mnuFacetMaxLength.Text = "Max Length";
+            // 
+            // mnuFacetMinLength
+            // 
+            this.mnuFacetMinLength.Index = 3;
+            this.mnuFacetMinLength.Text = "Min Length";
+            // 
+            // mnuFacetTotalDigits
+            // 
+            this.mnuFacetTotalDigits.Index = 4;
+            this.mnuFacetTotalDigits.Text = "Total Digits";
+            // 
+            // mnuFacetPattern
+            // 
+            this.mnuFacetPattern.Index = 6;
+            this.mnuFacetPattern.Text = "Pattern";
+            // 
+            // mnuFacetWhiteSpace
+            // 
+            this.mnuFacetWhiteSpace.Index = 7;
+            this.mnuFacetWhiteSpace.Text = "White Space";
+            // 
+            // menuItem6
+            // 
+            this.menuItem6.Index = 8;
+            this.menuItem6.Text = "-";
+            // 
+            // mnuRemoveNode
+            // 
+            this.mnuRemoveNode.Index = 9;
+            this.mnuRemoveNode.Text = "Remove";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1113, 737);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.mainTabs);
             this.Controls.Add(this.mainStatusBar);
@@ -569,8 +872,10 @@
             this.mainTabs.ResumeLayout(false);
             this.tabXML.ResumeLayout(false);
             this.tabSchema.ResumeLayout(false);
+            this.tabSchema.PerformLayout();
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
+            this.gbSelectType.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -615,10 +920,8 @@
         private System.Windows.Forms.TabPage tabXML;
         private System.Windows.Forms.TabPage tabSchema;
         private System.Windows.Forms.ToolStrip toolStrip;
-        private System.Windows.Forms.RichTextBox rtbSchema;
         private System.Windows.Forms.ToolStripButton tsbtnRootElement;
         private NewControls.TreeViewWithPaint xmlTreeview;
-        private NewControls.TreeViewWithPaint schemaTreeview;
         private System.Windows.Forms.ToolStripButton tsbtnAddElement;
         private System.Windows.Forms.ToolStripButton tsbtnAddAttribute;
         private System.Windows.Forms.ToolStripButton tsbtnDelete;
@@ -629,7 +932,41 @@
         private System.Windows.Forms.ToolStripStatusLabel tsLabelnodeIndex;
         private System.Windows.Forms.WebBrowser xmlBrowserWindow;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.GroupBox gbSelectType;
+        private System.Windows.Forms.ComboBox cbGlobalTypes;
+        private System.Windows.Forms.ComboBox cbSimpleTypes;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox edSchemaErrors;
+        private System.Windows.Forms.TextBox edSchema;
+        private System.Windows.Forms.TreeView tvSchema;
+        private System.Windows.Forms.ContextMenu tvcmSchema;
+        private System.Windows.Forms.MenuItem mnuAddElement;
+        private System.Windows.Forms.MenuItem mnuAddSimpleType;
+        private System.Windows.Forms.MenuItem mnuAddComplexType;
+        private System.Windows.Forms.MenuItem mnuAddAttribute;
+        private System.Windows.Forms.MenuItem menuItem9;
+        private System.Windows.Forms.MenuItem menuItem5;
+        private System.Windows.Forms.MenuItem mnuAddAnnotation;
+        private System.Windows.Forms.MenuItem mnuAddDocumentation;
+        private System.Windows.Forms.MenuItem mnuAddAppInfo;
+        private System.Windows.Forms.MenuItem menuItem4;
+        private System.Windows.Forms.MenuItem menuItem7;
+        private System.Windows.Forms.MenuItem mnuFacetEnumeration;
+        private System.Windows.Forms.MenuItem mnuFacetMaxExclusive;
+        private System.Windows.Forms.MenuItem mnuFacetMaxInclusive;
+        private System.Windows.Forms.MenuItem mnuFacetMinExclusive;
+        private System.Windows.Forms.MenuItem mnuFacetMinInclusive;
+        private System.Windows.Forms.MenuItem mnuFacetNumeric;
+        private System.Windows.Forms.MenuItem mnuFacetFractionDigits;
+        private System.Windows.Forms.MenuItem mnuFacetLength;
+        private System.Windows.Forms.MenuItem mnuFacetMaxLength;
+        private System.Windows.Forms.MenuItem mnuFacetMinLength;
+        private System.Windows.Forms.MenuItem mnuFacetTotalDigits;
+        private System.Windows.Forms.MenuItem mnuFacetPattern;
+        private System.Windows.Forms.MenuItem mnuFacetWhiteSpace;
+        private System.Windows.Forms.MenuItem menuItem6;
+        private System.Windows.Forms.MenuItem mnuRemoveNode;
     }
 }
 
