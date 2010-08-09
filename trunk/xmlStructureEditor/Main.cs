@@ -22,11 +22,14 @@ namespace xmlStructureEditor
     public partial class Main : Form
     {        
         XmlDocument xmlDoc; // Accessible xmlDocument
+        XmlDocument undoDoc; // Undo Functionality Document
         
         public Main()
         {
             InitializeComponent();           
             
+            
+
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -74,7 +77,29 @@ namespace xmlStructureEditor
             xmlDoc.NodeRemoved += new XmlNodeChangedEventHandler(updateXmlDisplays);
             xmlDoc.NodeChanged += new XmlNodeChangedEventHandler(updateXmlDisplays);
 
-            
+            tsbtnAddAttribute.Enabled = false;
+            tsbtnAddCDATA.Enabled = false;
+            tsbtnAddElement.Enabled = false;
+            tsbtnComment.Enabled = false;
+            tsbtnAddData.Enabled = false;
+            tsbtnDelete.Enabled = false;
+            tsbtnRootElement.Enabled = true;
+
+
+
+
+            MessageBalloon m_mb = new MessageBalloon();
+            m_mb.Parent = this.toolStrip;
+            m_mb.Title = "Step One";
+            m_mb.TitleIcon = TooltipIcon.Info;
+            m_mb.Text = "You must add a Root Element to begin!";
+
+            BalloonAlignment ba = (BalloonAlignment)Enum.Parse(typeof(BalloonAlignment), "TopLeft");
+            m_mb.Align = ba;
+            m_mb.CenterStem = true;
+            m_mb.UseAbsolutePositioning = false;
+            m_mb.Show();
+	
             
         }
 
@@ -106,11 +131,8 @@ namespace xmlStructureEditor
         
 
         private void InitializeTreeView() // Handles Treeview drawing
-        {          
-            xmlTreeview.Paint += new PaintEventHandler(Treeview_Paint);
-            schemaTreeview.Paint += new PaintEventHandler(Treeview_Paint);
-            xmlTreeview.AfterSelect += new TreeViewEventHandler(xmlTreeview_AfterSelect);
-            
+        {   
+            xmlTreeview.AfterSelect += new TreeViewEventHandler(xmlTreeview_AfterSelect);            
         }
 
         private bool haveParent(TreeView tv)
@@ -142,7 +164,7 @@ namespace xmlStructureEditor
             tsStatusLabelClear.Text = xmlTreeview.SelectedNode.FullPath.ToString();
             tsLabelnodeIndex.Text = xmlTreeview.SelectedNode.Tag.ToString();
 
-            XmlNodeType currentSelType = treeviewNodeType(xmlTreeview); // get type of element selected
+            XmlNodeType currentSelType = treeviewNodeType(xmlTreeview);
 
             tsbtnAddAttribute.Enabled = false;
             tsbtnAddCDATA.Enabled = false;
@@ -168,26 +190,31 @@ namespace xmlStructureEditor
                 tsbtnAddElement.Enabled = true;
                 tsbtnComment.Enabled = true;
                 tsbtnAddData.Enabled = true;
-                tsbtnDelete.Enabled = true;                
+                tsbtnDelete.Enabled = true;
+                return;
             }
             if (currentSelType.Equals(XmlNodeType.Attribute))
             {                
                 tsbtnDelete.Enabled = true;
+                return;
             }
             if (currentSelType.Equals(XmlNodeType.CDATA))
             {
                 tsbtnAddCDATA.Enabled = true;
                 tsbtnDelete.Enabled = true;
+                return;
             }
             if (currentSelType.Equals(XmlNodeType.Text))
             {
                 tsbtnAddData.Enabled = true;
                 tsbtnDelete.Enabled = true;
+                return;
             }
             if (currentSelType.Equals(XmlNodeType.Comment))
             {
                 tsbtnComment.Enabled = true;
                 tsbtnDelete.Enabled = true;
+                return;
             }
 
             
@@ -195,6 +222,7 @@ namespace xmlStructureEditor
 
         XmlNodeType treeviewNodeType(TreeView tview)
         {
+            // -- Calculate TreeView Node as an XmlNodeType in an XmlDocument
             if (tview.SelectedNode.Text.Contains("<!--"))
                 return XmlNodeType.Comment;
             else if (tview.SelectedNode.Text.EndsWith(">"))
@@ -207,101 +235,62 @@ namespace xmlStructureEditor
                 return XmlNodeType.Attribute;
             
             if (tview.SelectedNode.Text.Contains("CDATA: "))
-                return XmlNodeType.CDATA;
+                return XmlNodeType.CDATA;         
 
-            
-
-           
-
+            // -- Return Notation as overflow, error handler essentially
             return XmlNodeType.Notation;
             
-        }
-
-        void Treeview_Paint(object sender, PaintEventArgs e)
-        {            
-
-            if (xmlTreeview.Nodes.Count == 0)
-            {
-                tsbtnAddAttribute.Enabled = false;
-                tsbtnAddCDATA.Enabled = false;
-                tsbtnAddElement.Enabled = false;
-                tsbtnComment.Enabled = false;
-                tsbtnAddData.Enabled = false;
-                tsbtnDelete.Enabled = false;   
-                tsbtnRootElement.Enabled = true;                
-            }
-            else
-            {
-                tsbtnRootElement.Enabled = false;                
-            }
-            
-
-           
-
-
-
-            
-
-                        
-            
-            
-        }
+        } // treeviewNodeType()
 
         private void tsbtnRootElement_Click(object sender, EventArgs e)
         {
 
-            // Dialog to display root element name etc
+            // -- Instanciate a form to get the root element information
             addRootElement frmGetRootName = new addRootElement();
-            frmGetRootName.ShowDialog();
-
-            
-
-            // Create the XML Declaration
-           
-
-            // Create the ROOT element
+            frmGetRootName.ShowDialog();            
+                        
             try
             {
+                // -- Create the Root Element and the XML Declaration Entity
                 XmlElement root = xmlDoc.CreateElement(frmGetRootName.getRootElement());
-               
-
                 XmlDeclaration dec = xmlDoc.CreateXmlDeclaration("1.0", null, null);
+                
+                // -- Append both to the XML Document, Declaration must come first!
                 xmlDoc.AppendChild(dec);
-
                 xmlDoc.AppendChild(root);
 
+                // -- Append a generic creation date textnode, for display purposes.
                 root.AppendChild(xmlDoc.CreateTextNode("CreationDate: " + DateTime.Today.ToString()));
-                
-                
+
+                // -- Disable the ability to add a root element
+                tsbtnRootElement.Enabled = false;  
             }
             catch (Exception ex)
             {
+                // -- Catch execution errors
                 MessageBox.Show(ex.ToString());
-                // tooltip popup error
-
-            }         
-           
-
-            
-            
-        }
+            }                     
+        } // tsbtnRootElement_Click()
 
         
         private void tsbtnAddElement_Click(object sender, EventArgs e)
         {
-            addElement frmElement = new addElement();
-                              
+            // -- Instanciate the Element Form and display it
+            addElement frmElement = new addElement();                              
             frmElement.ShowDialog();
       
+
+            // -- Generate a Nodelist
              XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview
                .SelectedNode.Tag.ToString())
                .ParentNode.ChildNodes;
             
+            // -- Calculate the TreeIndex, then Append the new Element based on it
             int decC = calcIndex.calculateTreeIndex(xmlTreeview, xmlDoc);
             if (nl[decC].NodeType.Equals(XmlNodeType.XmlDeclaration))
                 decC++;
             nl[decC].AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));                  
-        }
+        } // tsBtnAddElement_Click()
 
 
       
@@ -310,17 +299,23 @@ namespace xmlStructureEditor
 
         private void tsbAddAttribute_Click(object sender, EventArgs e)
         {
+            // -- Store the targeted Element
+            XmlElement attribTarget = (XmlElement)xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString());
+
+            // -- Instanciate an Attribute Addition Form
             addAttribute frmAttrib = new addAttribute();
             frmAttrib.ShowDialog();
             
-            XmlElement attribTarget = (XmlElement)xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString());
+            
 
+            // -- Create an Attribute to Append, based on the values given in the form.
             XmlAttribute att = xmlDoc.CreateAttribute(frmAttrib.getAttribName());
             att.Value = frmAttrib.getAttribVal();
 
+            // -- Append the Attribute
             attribTarget.Attributes.Append(att);              
             
-        }
+        } // tsAddAttribute_Click()
 
 
         private void tsbtnAddData_Click(object sender, EventArgs e)
@@ -434,24 +429,29 @@ namespace xmlStructureEditor
 
         private void tsbtnAddCDATA_Click(object sender, EventArgs e)
         {
-            XmlNodeList nl = xmlDoc.SelectSingleNode(xmlFunctions.treeToXpath(xmlTreeview
-                .SelectedNode.FullPath.ToString()))
-                .ParentNode.ChildNodes;
+            // -- Generate a nodelist for the selected Treeview Element
+       
+            XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString())
+              .ParentNode.ChildNodes;
 
-
+            // -- Display the add CDATA form
             addCdata frm = new addCdata();
             frm.ShowDialog();                               
 
-            XmlCDataSection cdata = xmlDoc.CreateCDataSection(frm.getCdata());
+                        int i_cData = calcIndex
+                .calculateTreeIndex(xmlTreeview, xmlDoc);
 
-            int i_cData = calcIndex.calculateTreeIndex(xmlTreeview, xmlDoc);
-
-            if (nl[i_cData].NodeType.Equals(XmlNodeType.XmlDeclaration))
+            // -- If an XmlDeclaration is in the NodeList, adjust the Index count
+            if (nl[i_cData].NodeType
+                .Equals(XmlNodeType.XmlDeclaration))
                 i_cData++;
 
-            nl[i_cData].AppendChild(cdata);
+            // -- Append the CDATA to the XmlDocument
+            nl[i_cData].AppendChild(xmlDoc
+                .CreateCDataSection(frm.getCdata()));
         
-        }
+        } // tsbtnAddCDATA_Click()
+
 
         private void tsbtnComment_Click(object sender, EventArgs e)
         {   
@@ -466,11 +466,21 @@ namespace xmlStructureEditor
 
         } // tsbtnComment_Click()
 
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // -- Close the application
             this.Close();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+
+
+
 
         
 

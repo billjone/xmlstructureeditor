@@ -68,7 +68,7 @@ namespace xmlStructureEditor
                     newTreeNode.Text = "<" + xmlNode.Name + ">";
                     break;
                 case XmlNodeType.Attribute:
-                    newTreeNode.ForeColor = Color.Pink;
+                    newTreeNode.ForeColor = Color.Purple;
                     newTreeNode.Text = "ATTRIBUTE: " + xmlNode.Name;
                     break;
                 case XmlNodeType.Text:
