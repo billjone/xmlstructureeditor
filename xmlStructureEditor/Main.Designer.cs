@@ -67,7 +67,7 @@
             this.mainTabs = new System.Windows.Forms.TabControl();
             this.tabXML = new System.Windows.Forms.TabPage();
             this.xmlBrowserWindow = new System.Windows.Forms.WebBrowser();
-            this.xmlTreeview = new NewControls.TreeViewWithPaint();
+            this.xmlTreeview = new System.Windows.Forms.TreeView();
             this.tabSchema = new System.Windows.Forms.TabPage();
             this.gbSelectType = new System.Windows.Forms.GroupBox();
             this.cbGlobalTypes = new System.Windows.Forms.ComboBox();
@@ -930,7 +930,7 @@
         private System.Windows.Forms.TabPage tabSchema;
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripButton tsbtnRootElement;
-        private NewControls.TreeViewWithPaint xmlTreeview;
+        private System.Windows.Forms.TreeView xmlTreeview;
         private System.Windows.Forms.ToolStripButton tsbtnAddElement;
         private System.Windows.Forms.ToolStripButton tsbtnAddAttribute;
         private System.Windows.Forms.ToolStripButton tsbtnDelete;
