@@ -12,10 +12,20 @@ namespace xmlStructureEditor
     public partial class addRootElement : Form
     {
         private string _rootElementName;
+        private EditBalloon editBalloon = new EditBalloon();
 
         public addRootElement()
         {
             InitializeComponent();
+
+            // -- Hook KeyPress event for the MessageBox to the Keypress Method
+            this.txtRootEleName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtRootEleName_KeyPress);
+
+            // -- Format the Pop-Up Balloon
+            editBalloon.Title = "Format Warning";
+            editBalloon.TitleIcon = TooltipIcon.Warning;
+            editBalloon.Text = "You cannot use spaces, or begin the root element with a number!";
+            editBalloon.Parent = this.txtRootEleName;
         }
 
         private void rootElement_Load(object sender, EventArgs e)
@@ -33,6 +43,16 @@ namespace xmlStructureEditor
         public string getRootElement()
         {
             return _rootElementName;
+        }
+
+       
+
+        private void txtRootEleName_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            if (e.KeyChar == ' ' || e.KeyChar == '1')
+            {
+                editBalloon.Show();            
+            }
         }
     }
 }

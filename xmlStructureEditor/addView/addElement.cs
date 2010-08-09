@@ -13,10 +13,20 @@ namespace xmlStructureEditor
     {
 
         private string _elementName;
-        
+        private EditBalloon editBalloon = new EditBalloon();
+
         public addElement()
         {
             InitializeComponent();
+
+            // -- Hook KeyPress event for the MessageBox to the Keypress Method
+            this.txtElementName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtElementName_KeyPress);
+
+            // -- Format the Pop-Up Balloon
+            editBalloon.Title = "Format Warning";
+            editBalloon.TitleIcon = TooltipIcon.Warning;
+            editBalloon.Text = "You cannot use spaces, or begin an element with a number!";
+            editBalloon.Parent = this.txtElementName;
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -37,6 +47,13 @@ namespace xmlStructureEditor
 
         }
 
+        private void txtElementName_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            if (e.KeyChar == ' ' || e.KeyChar == '1')
+            {
+                editBalloon.Show();
+            }
+        }
 
     }
 }
