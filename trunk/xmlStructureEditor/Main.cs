@@ -528,33 +528,6 @@ namespace xmlStructureEditor
         }
 
 
-        #region Schema
-        public class GlobalElementType
-        {
-            public GlobalElementType(string name, XmlSchemaObject type)
-            {
-                this.name = name;
-                this.type = type;
-            }
-
-            public override string ToString()
-            {
-                return name;
-            }
-
-            public string Get()
-            {
-                return name;
-            }
-
-            public void Set(string name)
-            {
-                this.name = name;
-            }
-
-            public string name;
-            public XmlSchemaObject type;
-        }
 
 
 
