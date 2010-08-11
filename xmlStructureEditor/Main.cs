@@ -50,7 +50,7 @@ namespace xmlStructureEditor
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
+        {            
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -71,7 +71,9 @@ namespace xmlStructureEditor
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+           xmlDoc = new XmlDocument();
+           updateXmlDisplays(null, null);
+           Main_Load(null, null);
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -173,9 +175,9 @@ namespace xmlStructureEditor
             if (haveParent(xmlTreeview) && xmlTreeview.SelectedNode.Parent.Text.Equals("#document"))
                 xmlTreeview.SelectedNode.Parent.Tag = "/";
 
-            tsStatusLabel.Text = xmlFunctions.treeToXpath(xmlTreeview.SelectedNode.FullPath.ToString());            
-            tsStatusLabelClear.Text = xmlTreeview.SelectedNode.FullPath.ToString();
-            tsLabelnodeIndex.Text = xmlTreeview.SelectedNode.Tag.ToString();
+            tsStatusXpath.Text = "XPATH: " + xmlTreeview.SelectedNode.Tag.ToString();
+            tsStatusElementType.Text = "Element Type: " + treeviewNodeType(xmlTreeview).ToString();
+            
 
             XmlNodeType currentSelType = treeviewNodeType(xmlTreeview);
 
@@ -1920,6 +1922,30 @@ namespace xmlStructureEditor
 
             }
 
+        }
+
+        private void printToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            xmlBrowserWindow.Print();            
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Displays a SaveFileDialog so the user can save the Image
+            // assigned to Button2.
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XML File|*.xml";
+            saveFileDialog.Title = "Save an XML File";
+            saveFileDialog.ShowDialog();
+
+            // If the file name is not an empty string open it for saving.
+            if (saveFileDialog.FileName != "")
+            {
+                XmlTextWriter writer = new XmlTextWriter(saveFileDialog.OpenFile(), null);
+                writer.Formatting = Formatting.Indented;
+                xmlDoc.Save(writer);
+
+            }
         }
 
 

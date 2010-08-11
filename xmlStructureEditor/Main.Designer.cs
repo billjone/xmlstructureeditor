@@ -39,7 +39,6 @@
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.printPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,9 +60,8 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainStatusBar = new System.Windows.Forms.StatusStrip();
-            this.tsStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsStatusLabelClear = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsLabelnodeIndex = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsStatusXpath = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsStatusElementType = new System.Windows.Forms.ToolStripStatusLabel();
             this.mainTabs = new System.Windows.Forms.TabControl();
             this.tabXML = new System.Windows.Forms.TabPage();
             this.xmlBrowserWindow = new System.Windows.Forms.WebBrowser();
@@ -147,7 +145,6 @@
             this.saveAsToolStripMenuItem,
             this.toolStripSeparator1,
             this.printToolStripMenuItem,
-            this.printPreviewToolStripMenuItem,
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -187,6 +184,7 @@
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "&Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
@@ -208,14 +206,7 @@
             this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.printToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.printToolStripMenuItem.Text = "&Print";
-            // 
-            // printPreviewToolStripMenuItem
-            // 
-            this.printPreviewToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("printPreviewToolStripMenuItem.Image")));
-            this.printPreviewToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
-            this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.printPreviewToolStripMenuItem.Text = "Print Pre&view";
+            this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -367,32 +358,25 @@
             // mainStatusBar
             // 
             this.mainStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsStatusLabel,
-            this.tsStatusLabelClear,
-            this.tsLabelnodeIndex});
+            this.tsStatusXpath,
+            this.tsStatusElementType});
             this.mainStatusBar.Location = new System.Drawing.Point(0, 504);
             this.mainStatusBar.Name = "mainStatusBar";
             this.mainStatusBar.Size = new System.Drawing.Size(1113, 22);
             this.mainStatusBar.TabIndex = 2;
             this.mainStatusBar.Text = "statusStrip1";
             // 
-            // tsStatusLabel
+            // tsStatusXpath
             // 
-            this.tsStatusLabel.Name = "tsStatusLabel";
-            this.tsStatusLabel.Size = new System.Drawing.Size(118, 17);
-            this.tsStatusLabel.Text = "toolStripStatusLabel1";
+            this.tsStatusXpath.Name = "tsStatusXpath";
+            this.tsStatusXpath.Size = new System.Drawing.Size(48, 17);
+            this.tsStatusXpath.Text = "XPATH:";
             // 
-            // tsStatusLabelClear
+            // tsStatusElementType
             // 
-            this.tsStatusLabelClear.Name = "tsStatusLabelClear";
-            this.tsStatusLabelClear.Size = new System.Drawing.Size(118, 17);
-            this.tsStatusLabelClear.Text = "toolStripStatusLabel1";
-            // 
-            // tsLabelnodeIndex
-            // 
-            this.tsLabelnodeIndex.Name = "tsLabelnodeIndex";
-            this.tsLabelnodeIndex.Size = new System.Drawing.Size(118, 17);
-            this.tsLabelnodeIndex.Text = "toolStripStatusLabel1";
+            this.tsStatusElementType.Name = "tsStatusElementType";
+            this.tsStatusElementType.Size = new System.Drawing.Size(82, 17);
+            this.tsStatusElementType.Text = "Element Type:";
             // 
             // mainTabs
             // 
@@ -905,7 +889,7 @@
 
         private System.Windows.Forms.MenuStrip mainMenuStrip;
         private System.Windows.Forms.StatusStrip mainStatusBar;
-        private System.Windows.Forms.ToolStripStatusLabel tsStatusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel tsStatusXpath;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
@@ -914,7 +898,6 @@
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem printToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem printPreviewToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
@@ -945,10 +928,9 @@
         private System.Windows.Forms.ToolStripButton tsbtnAddAttribute;
         private System.Windows.Forms.ToolStripButton tsbtnDelete;
         private System.Windows.Forms.ToolStripButton tsbtnAddData;
-        private System.Windows.Forms.ToolStripStatusLabel tsStatusLabelClear;
+        private System.Windows.Forms.ToolStripStatusLabel tsStatusElementType;
         private System.Windows.Forms.ToolStripButton tsbtnAddCDATA;
         private System.Windows.Forms.ToolStripButton tsbtnComment;
-        private System.Windows.Forms.ToolStripStatusLabel tsLabelnodeIndex;
         private System.Windows.Forms.WebBrowser xmlBrowserWindow;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox gbSelectType;
