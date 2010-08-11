@@ -69,6 +69,7 @@
             this.xmlBrowserWindow = new System.Windows.Forms.WebBrowser();
             this.xmlTreeview = new System.Windows.Forms.TreeView();
             this.tabSchema = new System.Windows.Forms.TabPage();
+            this.schemaBrowser = new System.Windows.Forms.WebBrowser();
             this.gbSelectType = new System.Windows.Forms.GroupBox();
             this.cbGlobalTypes = new System.Windows.Forms.ComboBox();
             this.cbSimpleTypes = new System.Windows.Forms.ComboBox();
@@ -112,7 +113,8 @@
             this.tsbtnAddCDATA = new System.Windows.Forms.ToolStripButton();
             this.tsbtnComment = new System.Windows.Forms.ToolStripButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.schemaBrowser = new System.Windows.Forms.WebBrowser();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusBar.SuspendLayout();
             this.mainTabs.SuspendLayout();
@@ -158,7 +160,7 @@
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -168,14 +170,14 @@
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator.Size = new System.Drawing.Size(149, 6);
             // 
             // saveToolStripMenuItem
             // 
@@ -183,19 +185,20 @@
             this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "&Save";
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveAsToolStripMenuItem.Text = "Save &As";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // printToolStripMenuItem
             // 
@@ -203,7 +206,7 @@
             this.printToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
             this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.printToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.printToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.printToolStripMenuItem.Text = "&Print";
             // 
             // printPreviewToolStripMenuItem
@@ -211,18 +214,18 @@
             this.printPreviewToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("printPreviewToolStripMenuItem.Image")));
             this.printPreviewToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
-            this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.printPreviewToolStripMenuItem.Text = "Print Pre&view";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -421,11 +424,12 @@
             this.xmlBrowserWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.xmlBrowserWindow.Location = new System.Drawing.Point(315, 6);
+            this.xmlBrowserWindow.Location = new System.Drawing.Point(400, 6);
             this.xmlBrowserWindow.MinimumSize = new System.Drawing.Size(20, 20);
             this.xmlBrowserWindow.Name = "xmlBrowserWindow";
-            this.xmlBrowserWindow.Size = new System.Drawing.Size(735, 434);
+            this.xmlBrowserWindow.Size = new System.Drawing.Size(650, 434);
             this.xmlBrowserWindow.TabIndex = 3;
+            this.xmlBrowserWindow.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.xmlBrowserWindow_DocumentCompleted);
             // 
             // xmlTreeview
             // 
@@ -434,7 +438,7 @@
             this.xmlTreeview.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.xmlTreeview.Location = new System.Drawing.Point(3, 3);
             this.xmlTreeview.Name = "xmlTreeview";
-            this.xmlTreeview.Size = new System.Drawing.Size(305, 437);
+            this.xmlTreeview.Size = new System.Drawing.Size(391, 437);
             this.xmlTreeview.TabIndex = 2;
             // 
             // tabSchema
@@ -449,6 +453,17 @@
             this.tabSchema.TabIndex = 1;
             this.tabSchema.Text = "Schema";
             this.tabSchema.UseVisualStyleBackColor = true;
+            // 
+            // schemaBrowser
+            // 
+            this.schemaBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.schemaBrowser.Location = new System.Drawing.Point(405, 3);
+            this.schemaBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.schemaBrowser.Name = "schemaBrowser";
+            this.schemaBrowser.Size = new System.Drawing.Size(645, 534);
+            this.schemaBrowser.TabIndex = 7;
             // 
             // gbSelectType
             // 
@@ -550,6 +565,7 @@
             this.tvSchema.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.tvSchema.ContextMenu = this.tvcmSchema;
+            this.tvSchema.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tvSchema.FullRowSelect = true;
             this.tvSchema.HideSelection = false;
             this.tvSchema.ImageIndex = 0;
@@ -557,7 +573,7 @@
             this.tvSchema.Location = new System.Drawing.Point(3, 3);
             this.tvSchema.Name = "tvSchema";
             this.tvSchema.SelectedImageIndex = 0;
-            this.tvSchema.Size = new System.Drawing.Size(280, 328);
+            this.tvSchema.Size = new System.Drawing.Size(396, 328);
             this.tvSchema.TabIndex = 0;
             this.tvSchema.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvSchema_AfterSelect);
             // 
@@ -852,16 +868,10 @@
             this.tsbtnComment.Text = "Add Comment";
             this.tsbtnComment.Click += new System.EventHandler(this.tsbtnComment_Click);
             // 
-            // schemaBrowser
+            // openFileDialog
             // 
-            this.schemaBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.schemaBrowser.Location = new System.Drawing.Point(289, 3);
-            this.schemaBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.schemaBrowser.Name = "schemaBrowser";
-            this.schemaBrowser.Size = new System.Drawing.Size(761, 534);
-            this.schemaBrowser.TabIndex = 7;
+            this.openFileDialog.FileName = "openFileDialog";
+            this.openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
             // Main
             // 
@@ -976,6 +986,8 @@
         private System.Windows.Forms.MenuItem mnuRemoveNode;
         private System.Windows.Forms.ImageList tvImageList;
         private System.Windows.Forms.WebBrowser schemaBrowser;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }
 

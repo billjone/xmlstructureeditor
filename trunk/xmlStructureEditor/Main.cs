@@ -19,6 +19,9 @@ using System.IO; // Required for XML -> String conversions
 using System.Xml; // Required for all XML operations. Built into dotNet2.0
 using System.Xml.Schema;
 using System.Reflection;
+using System.Web;
+using mshtml;
+
 
 namespace xmlStructureEditor
 {
@@ -48,25 +51,21 @@ namespace xmlStructureEditor
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-            
-
-            try
-            {          
-                
-                xmlDoc.Load(@"c:\temp\books.xml");
-                
-
-
-            }
-            catch (XmlException xmlEx)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show(xmlEx.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }					
+                try
+                {
+                    xmlDoc.Load(openFileDialog.FileName);
+                }
+                catch (XmlException xmlEx)
+                {
+                    MessageBox.Show(xmlEx.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }	
 
         }
 
@@ -308,7 +307,9 @@ namespace xmlStructureEditor
             int decC = calcIndex.calculateTreeIndex(xmlTreeview, xmlDoc);
             if (nl[decC].NodeType.Equals(XmlNodeType.XmlDeclaration))
                 decC++;
-            nl[decC].AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));                  
+            nl[decC].AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));
+
+
         } // tsBtnAddElement_Click()
 
 
@@ -1880,10 +1881,46 @@ namespace xmlStructureEditor
         }
         #endregion
 
+        private void xmlBrowserWindow_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            // code to auto highlight 
+
+         
+          
+
+
+
+        }
+
         #endregion
+
+        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+
+        }
 
 
         #endregion
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Displays a SaveFileDialog so the user can save the Image
+            // assigned to Button2.
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XML File|*.xml";
+            saveFileDialog.Title = "Save an XML File";
+            saveFileDialog.ShowDialog();
+
+            // If the file name is not an empty string open it for saving.
+            if (saveFileDialog.FileName != "")
+            {
+                XmlTextWriter writer = new XmlTextWriter(saveFileDialog.OpenFile(), null);
+                writer.Formatting = Formatting.Indented;
+                xmlDoc.Save(writer);              
+
+            }
+
+        }
 
 
 
