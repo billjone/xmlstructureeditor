@@ -79,12 +79,20 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TreeViewWithPaint, Version=1.0.3861.17962, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\TreeView With Paint\TreeViewWithPaint\bin\Debug\TreeViewWithPaint.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="cruFunc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="cruFunc.Designer.cs">
+      <DependentUpon>cruFunc.cs</DependentUpon>
+    </Compile>
     <Compile Include="addView\addAttribute.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -132,6 +140,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cruFunc.resx">
+      <DependentUpon>cruFunc.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="addView\addAttribute.resx">
       <DependentUpon>addAttribute.cs</DependentUpon>
       <SubType>Designer</SubType>

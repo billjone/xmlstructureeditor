@@ -29,43 +29,72 @@ namespace xmlStructureEditor
     {        
         XmlDocument xmlDoc; // Accessible xmlDocument
         XmlDocument undoDoc; // Undo Functionality Document
-        enum TreeViewImages { Schema, Element, SimpleType, ComplexType, Annotation, Documentation, AppInfo, Attribute, Facet };
+        enum ObjectType { Schema, Element, SimpleType, ComplexType, Attribute };
         private string prevLabel;
-        private XmlSchema schema;
+        private XmlSchema schemaDoc;
 
         public Main()
         {
             InitializeComponent();
 
             CreateRootNode();
-            tvSchema.LabelEdit = true;
-            tvSchema.KeyUp += new KeyEventHandler(EventTreeViewKeyUp);
-            tvSchema.BeforeLabelEdit += new NodeLabelEditEventHandler(PreEventLabelChanged);
-            tvSchema.AfterLabelEdit += new NodeLabelEditEventHandler(EventLabelChanged);
-            tvSchema.MouseDown += new MouseEventHandler(EventMouseDown);
-            schema = new XmlSchema();
+            schemaTree.LabelEdit = true;
+            schemaTree.BeforeLabelEdit += new NodeLabelEditEventHandler(PreEventLabelChanged);
+            schemaTree.AfterLabelEdit += new NodeLabelEditEventHandler(EventLabelChanged);
+            schemaTree.MouseDown += new MouseEventHandler(EventMouseDown);
+            schemaDoc = new XmlSchema();
             CompileSchema();
             
 
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {            
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+        {
+            if (mainTabs.SelectedIndex == 0)
             {
-                try
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    xmlDoc.Load(openFileDialog.FileName);
+                    try
+                    {
+                        xmlDoc.Load(openFileDialog.FileName);
+                    }
+                    catch (XmlException xmlEx)
+                    {
+                        MessageBox.Show(xmlEx.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
-                catch (XmlException xmlEx)
+            }
+            else
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    MessageBox.Show(xmlEx.Message);
+                    try
+                    {
+                        StreamReader sr = new StreamReader(openFileDialog.FileName);
+                        schemaDoc = XmlSchema.Read(sr, null);
+                        
+                        sr.Close();
+                        CompileSchema();
+                        CreateRootNode();
+                        DecodeSchema(schemaDoc, schemaTree.Nodes[0]);
+                        schemaTree.ExpandAll();
+                    }
+                    catch (XmlException xmlEx)
+                    {
+                        MessageBox.Show(xmlEx.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }	
+
+            }
+
 
         }
 
@@ -160,7 +189,8 @@ namespace xmlStructureEditor
                 return true;
             }
             catch(Exception ex)
-            {               
+            {              
+
                 return false;
             }
         }
@@ -544,580 +574,263 @@ namespace xmlStructureEditor
                 MessageBox.Show("Same!");
         }
 
-
-        #region SCHEMA!!!
-
-        public class GlobalElementType
+             
+        
+        public class NodeElementType
         {
-            public GlobalElementType(string name, XmlSchemaObject type)
+            // -- Constructor to populate Global Types for the Schema Editor
+            public NodeElementType(string newNodeName, XmlSchemaObject newNodeType)
             {
-                this.name = name;
-                this.type = type;
+                this.nodeName = newNodeName;
+                this.nodeType = newNodeType;
             }
 
-            public override string ToString()
-            {
-                return name;
-            }
+            public override string ToString() { return nodeName; }
+            public string Get() { return nodeName; }
+            public void Set(string name) { this.nodeName = name; }
+            public string nodeName;
+            public XmlSchemaObject nodeType;
+        } // Class: NodeElementType
 
-            public string Get()
-            {
-                return name;
-            }
+   
 
-            public void Set(string name)
-            {
-                this.name = name;
-            }
 
-            public string name;
-            public XmlSchemaObject type;
-        }
-
-        #region Menu Commands
-
-        #region Add Facets
-        // There are several types of facets that can be added to a simple type.
-        // This code adds a facet and specifies a default value (completely arbitrary)
-
-        private void mnuFacetEnumeration_Click(object sender, System.EventArgs e)
+        private void MouseMenuAddAttribute_Click(object sender, EventArgs e)
         {
-            bool ret = AddFacet(new XmlSchemaEnumerationFacet(), "1", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetMaxExclusive_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaMaxExclusiveFacet(), "101", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetMaxInclusive_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaMaxInclusiveFacet(), "100", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetMinExclusive_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaMinExclusiveFacet(), "0", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetMinInclusive_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaMinInclusiveFacet(), "1", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetFractionDigits_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaFractionDigitsFacet(), "2", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetLength_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaLengthFacet(), "16", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetMaxLength_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaMaxLengthFacet(), "16", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetMinLength_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaMinLengthFacet(), "1", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetTotalDigits_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaTotalDigitsFacet(), "8", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-
-        private void mnuFacetPattern_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaPatternFacet(), "[0-9]", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-
-        private void mnuFacetWhiteSpace_Click(object sender, System.EventArgs e)
-        {
-            bool ret = AddFacet(new XmlSchemaWhiteSpaceFacet(), "collapse", TreeViewImages.Facet);
-            if (!ret)
-            {
-                MessageBox.Show("Cannot add an element to this item.");
-            }
-        }
-        #endregion
-
-        #region Add Annotation, Documentation, and AppInfo
-        // create an annotation for the schema or for an annotatable object
-        private void mnuAddAnnotation_Click(object sender, System.EventArgs e)
-        {
-            XmlSchemaAnnotation annot = new XmlSchemaAnnotation();
-            TreeNode newNode = CreateNode("--annotation--");
-
-            // if adding at the schema root level...
-            if (newNode.Parent == tvSchema.Nodes[0])
-            {
-                AddToCollection(schema.Items, annot, newNode, TreeViewImages.Annotation);
-            }
-            else
-            {
-                // otherwise, get the object as an XmlSchemaAnnotated type
-                XmlSchemaAnnotated obj = newNode.Parent.Tag as XmlSchemaAnnotated;
-                if (obj != null)
-                {
-                    // if it exists, add the annotation
-                    obj.Annotation = annot;
-                    newNode.Tag = annot;
-                    newNode.ImageIndex = (int)TreeViewImages.Annotation;
-                    newNode.SelectedImageIndex = (int)TreeViewImages.Annotation;
-                    CompileSchema();
-                }
-                else
-                {
-                    // otherwise, tell the user annotation cannot be added to this type.
-                    newNode.Parent.Nodes.Remove(newNode);
-                    MessageBox.Show("Cannot create an annotation for this item.");
-                }
-            }
-        }
-
-        private void mnuAddDocumentation_Click(object sender, System.EventArgs e)
-        {
-            bool success = false;
-            XmlSchemaAnnotation annot = tvSchema.SelectedNode.Tag as XmlSchemaAnnotation;
-            // if the parent node is an annotation type...
-            if (annot != null)
-            {
-                // ...then add the documentation type
-                TreeNode newNode = CreateNode("--documentation--");
-                XmlSchemaDocumentation doc = new XmlSchemaDocumentation();
-                doc.Markup = TextToNodeArray("Documentation");
-                annot.Items.Add(doc);
-                newNode.Tag = doc;
-                newNode.ImageIndex = (int)TreeViewImages.Annotation;
-                newNode.SelectedImageIndex = (int)TreeViewImages.Annotation;
-                CompileSchema();
-                success = true;
-            }
-            if (!success)
-            {
-                // otherwise create the annotation type first
-                mnuAddAnnotation_Click(sender, e);
-                annot = tvSchema.SelectedNode.Tag as XmlSchemaAnnotation;
-                // if successful in adding the annotation type, add the documentation type now
-                if (annot != null)
-                {
-                    mnuAddDocumentation_Click(sender, e);
-                }
-            }
-        }
-
-        private void mnuAddAppInfo_Click(object sender, System.EventArgs e)
-        {
-            bool success = false;
-            XmlSchemaAnnotation annot = tvSchema.SelectedNode.Tag as XmlSchemaAnnotation;
-            // if the parent node is an annotation type...
-            if (annot != null)
-            {
-                // ...then add the AppInfo type
-                TreeNode newNode = CreateNode("--app info--");
-                XmlSchemaAppInfo doc = new XmlSchemaAppInfo();
-                doc.Markup = TextToNodeArray("Application Information");
-                annot.Items.Add(doc);
-                newNode.Tag = doc;
-                newNode.ImageIndex = (int)TreeViewImages.Annotation;
-                newNode.SelectedImageIndex = (int)TreeViewImages.Annotation;
-                CompileSchema();
-                success = true;
-            }
-            if (!success)
-            {
-                // otherwise create the annotation type first
-                mnuAddAnnotation_Click(sender, e);
-                annot = tvSchema.SelectedNode.Tag as XmlSchemaAnnotation;
-                // if successful in creating the annotation type, add the AppInfo type now
-                if (annot != null)
-                {
-                    mnuAddAppInfo_Click(sender, e);
-                }
-            }
-        }
-
-        #endregion
-
-        #region Add Attribute
-        // Can only be added to schema root as a global or complex type.
-        // For complex types, the attribute can reference a global type.
-        // An optional type can be specified referring to a simple type.
-        // If the type isn't used, the attribute must define a simple type.
-        private void mnuAddAttribute_Click(object sender, System.EventArgs e)
-        {
+            // -- Create Schema and TreeNodes to Contain the Attribute
             TreeNode newNode = CreateNode("Attribute");
-            XmlSchemaAttribute attrib = new XmlSchemaAttribute();
-            attrib.Name = "Attribute";
-            attrib.SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema");
-
-            // root node?
-            if (newNode.Parent == tvSchema.Nodes[0])
+            XmlSchemaAttribute newSchemaAttrib = new XmlSchemaAttribute();            
+            newSchemaAttrib.SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema");
+            newSchemaAttrib.Name = "Attribute";
+                        
+            // -- Attribute can be added to root or Complex, so check if rootNode.
+            if (newNode.Parent == schemaTree.Nodes[0])
             {
-                // add to root of schema.  An global attribute cannot reference a global type
-                AddToCollection(schema.Items, attrib, newNode, TreeViewImages.Attribute);
-                cbGlobalTypes.Items.Add(new GlobalElementType(attrib.Name, attrib));
-                cbGlobalTypes.Enabled = false;
-                cbSimpleTypes.SelectedItem = -1;
-                cbSimpleTypes.Enabled = true;
-                cbSimpleTypes.SelectedItem = "string";
+                addCollection(schemaDoc.Items, newSchemaAttrib, newNode, ObjectType.Attribute);
+                comboGlobal.Items.Add(new NodeElementType(newSchemaAttrib.Name, newSchemaAttrib));
+                comboGlobal.Enabled = false;
+                comboSimple.SelectedItem = -1;
+                comboSimple.Enabled = true;
+                comboSimple.SelectedItem = "string";
             }
             else
             {
-                // an attribute can only be added to a complex type
+                // -- Can only be added to root or ComplexType Object
                 XmlSchemaComplexType ct = newNode.Parent.Tag as XmlSchemaComplexType;
-                if (ct != null)
+                if (ct == null)
                 {
-                    // and can reference a global attribute, so enable the global combobox
-                    AddToCollection(ct.Attributes, attrib, newNode, TreeViewImages.Attribute);
-                    cbGlobalTypes.SelectedItem = -1;
-                    cbGlobalTypes.Enabled = true;
-                    cbSimpleTypes.SelectedItem = "string";
-                    cbSimpleTypes.Enabled = true;
+                    newNode.Parent.Nodes.Remove(newNode);
+                    MessageBox.Show("Attributes cannot be added here!");
                 }
                 else
                 {
-                    newNode.Parent.Nodes.Remove(newNode);
-                    MessageBox.Show("Cannot create an attribute for this item.");
+                    addCollection(ct.Attributes, newSchemaAttrib, newNode, ObjectType.Attribute);
+                    comboGlobal.SelectedItem = -1;
+                    comboGlobal.Enabled = true;
+                    comboSimple.SelectedItem = "string";
+                    comboSimple.Enabled = true;
                 }
             }
-        }
-        #endregion
+        } // MouseMenuAddAttribute_Click()
+        
 
-        #region Add Element
-        // An element can be added to the schema or to a complex type.
-        // If adding to an element, convert the element to a complex type.
-        // An element can be added to a global complex type or to a local complex type.
-        private void mnuAddElement_Click(object sender, System.EventArgs e)
+        private void MenuMouseAddEle_Click(object sender, EventArgs e)
         {
             TreeNode newNode = CreateNode("Element");
             XmlSchemaElement element = new XmlSchemaElement();
             element.Name = "Element";
             element.SchemaTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema");
 
-            // root node?
-            if (newNode.Parent == tvSchema.Nodes[0])
-            {
-                // add to root of schema.  A global element can reference another global type
-                AddToCollection(schema.Items, element, newNode, TreeViewImages.Element);
-                cbGlobalTypes.Items.Add(new GlobalElementType(element.Name, element));
-                cbGlobalTypes.Enabled = true;
-                cbSimpleTypes.SelectedItem = -1;
-                cbSimpleTypes.Enabled = true;
-                cbSimpleTypes.SelectedItem = "string";
+            if (newNode.Parent == schemaTree.Nodes[0])
+            {                
+                addCollection(schemaDoc.Items, element, newNode, ObjectType.Element);
+                comboGlobal.Items.Add(new NodeElementType(element.Name, element));
+                comboGlobal.Enabled = true;
+                comboSimple.SelectedItem = -1;
+                comboSimple.Enabled = true;
+                comboSimple.SelectedItem = "string";
             }
             else
-            {
-                // otherwise, an element must be part of a complex type
-                bool ret = AddToComplexType(newNode.Parent.Tag, element, newNode, TreeViewImages.Element);
-                if (!ret)
+            {                
+                bool ret = AddToComplexType(newNode.Parent.Tag, element, newNode, ObjectType.Element);
+                if (ret)
                 {
-                    // not successful
-                    newNode.Parent.Nodes.Remove(newNode);
-                    MessageBox.Show("Cannot add an element to this item.");
+                    comboGlobal.SelectedItem = -1;
+                    comboGlobal.Enabled = true;
+                    comboSimple.SelectedItem = "string";
+                    comboSimple.Enabled = true;  
                 }
                 else
                 {
-                    // successful
-                    cbGlobalTypes.SelectedItem = -1;
-                    cbGlobalTypes.Enabled = true;
-                    cbSimpleTypes.SelectedItem = "string";
-                    cbSimpleTypes.Enabled = true;
+                    newNode.Parent.Nodes.Remove(newNode);
+                    MessageBox.Show("Cannot add an element to this item.");
                 }
             }
-        }
-        #endregion
+        } // MenuMouseAddElement_Click()
 
-        #region Add Simple Type
-        // A simple type can be added as a global type or as a local member of a complex type.
-        // A simple type cannot contain elements or attributes.
-        // Simple types are derived from basic types or other simple types.
-        // The complex type can either be a global definition or a local complex type.
-        // When adding to a complex type, the simple type must be wrapped in an element.
-        private void mnuAddSimpleType_Click(object sender, System.EventArgs e)
+
+        private void MenuMouseAddST_Click(object sender, EventArgs e)
         {
-            TreeNode newNode = CreateNode("SimpleType");
-
+            TreeNode newSTNode = CreateNode("SimpleType");
             XmlSchemaSimpleType simpleType = new XmlSchemaSimpleType();
             simpleType.Name = "SimpleType";
             XmlSchemaSimpleTypeRestriction restriction = new XmlSchemaSimpleTypeRestriction();
             restriction.BaseTypeName = new XmlQualifiedName("string", "http://www.w3.org/2001/XMLSchema");
             simpleType.Content = restriction;
-
-            // root node?
-            if (newNode.Parent == tvSchema.Nodes[0])
+            if (newSTNode.Parent == schemaTree.Nodes[0])
             {
-                // add to root of schema.  A global simple type cannot reference another global
-                AddToCollection(schema.Items, simpleType, newNode, TreeViewImages.SimpleType);
-                cbGlobalTypes.Items.Add(new GlobalElementType(simpleType.Name, simpleType));
-                cbGlobalTypes.Enabled = false;
-                cbSimpleTypes.SelectedItem = -1;
-                cbSimpleTypes.Enabled = true;
-                cbSimpleTypes.SelectedItem = "string";
+                addCollection(schemaDoc.Items, simpleType, newSTNode, ObjectType.SimpleType);
+                comboGlobal.Items.Add(new NodeElementType(simpleType.Name, simpleType));
+                comboGlobal.Enabled = false;
+                comboSimple.SelectedItem = -1;
+                comboSimple.Enabled = true;
+                comboSimple.SelectedItem = "string";
             }
             else
             {
-                // if not a root node, then it must be created as an element of simple type...
                 XmlSchemaElement el = new XmlSchemaElement();
                 el.Name = "SimpleType";
                 el.SchemaType = simpleType;
                 simpleType.Name = null;
-                // ...as a subnode to a complex type
-                bool ret = AddToComplexType(newNode.Parent.Tag, el, newNode, TreeViewImages.SimpleType);
-                if (!ret)
+                bool b_sF = AddToComplexType(newSTNode.Parent.Tag, el, newSTNode, ObjectType.SimpleType);
+                if (!b_sF)
                 {
-                    // failure
-                    newNode.Parent.Nodes.Remove(newNode);
+                    newSTNode.Parent.Nodes.Remove(newSTNode);
                     MessageBox.Show("Cannot add a simple type to this item.");
                 }
                 else
                 {
-                    // success.  Can reference a global simple type
-                    cbGlobalTypes.SelectedItem = -1;
-                    cbGlobalTypes.Enabled = true;
-                    cbSimpleTypes.SelectedItem = "string";
-                    cbSimpleTypes.Enabled = true;
+                    comboGlobal.SelectedItem = -1;
+                    comboGlobal.Enabled = true;
+                    comboSimple.SelectedItem = "string";
+                    comboSimple.Enabled = true;
                 }
             }
         }
-        #endregion
-
-        #region Add Complex Type
-        // A complex type can be added as a global type to the schema or as a complex element.
-        // If adding to an element, change the element to a complex type.
-        // When adding to a complex type, the complex type must be wrapped in an element.
-        private void mnuAddComplexType_Click(object sender, System.EventArgs e)
+        private void MenuMouseAddCT_Click(object sender, EventArgs e)
         {
-            TreeNode newNode = CreateNode("ComplexType");
+            TreeNode newCTNode = CreateNode("ComplexType");
 
-            XmlSchemaComplexType complexType = new XmlSchemaComplexType();
-            XmlSchemaSequence sequence = new XmlSchemaSequence();
-            complexType.Particle = sequence;
-            complexType.Name = "ComplexType";
+            XmlSchemaComplexType ct = new XmlSchemaComplexType();
+            XmlSchemaSequence s = new XmlSchemaSequence();
+            ct.Particle = s;
+            ct.Name = "ComplexType";
 
-            // root node?
-            if (newNode.Parent == tvSchema.Nodes[0])
+            if (newCTNode.Parent == schemaTree.Nodes[0])
             {
-                // add to root.  A complex type has no type reference information.
-                AddToCollection(schema.Items, complexType, newNode, TreeViewImages.ComplexType);
-                cbGlobalTypes.Items.Add(new GlobalElementType(complexType.Name, complexType));
-                cbSimpleTypes.SelectedItem = -1;
-                cbGlobalTypes.SelectedItem = -1;
-                cbSimpleTypes.Enabled = false;
-                cbGlobalTypes.Enabled = false;
+                addCollection(schemaDoc.Items, ct, newCTNode, ObjectType.ComplexType);
+                comboGlobal.Items.Add(new NodeElementType(ct.Name, ct));
+                comboSimple.SelectedItem = -1;
+                comboGlobal.SelectedItem = -1;
+                comboSimple.Enabled = false;
+                comboGlobal.Enabled = false;
             }
             else
             {
-                // if not at root, create an element of complex type...
-                XmlSchemaElement el = new XmlSchemaElement();
-                el.Name = "ComplexType";
-                el.SchemaType = complexType;
-                complexType.Name = null;
-                // ...that is added as a subnode to a complex type.
-                bool ret = AddToComplexType(newNode.Parent.Tag, el, newNode, TreeViewImages.ComplexType);
+                XmlSchemaElement es = new XmlSchemaElement();
+                es.Name = "ComplexType";
+                es.SchemaType = ct;
+                ct.Name = null;
+                bool ret = AddToComplexType(newCTNode.Parent.Tag, es, newCTNode, ObjectType.ComplexType);
                 if (!ret)
                 {
-                    // failure
-                    newNode.Parent.Nodes.Remove(newNode);
+                    newCTNode.Parent.Nodes.Remove(newCTNode);
                     MessageBox.Show("Cannot add a complex type to this item.");
                 }
                 else
                 {
-                    // success.  No type is referenced.
-                    cbSimpleTypes.SelectedItem = -1;
-                    cbGlobalTypes.SelectedItem = -1;
-                    cbSimpleTypes.Enabled = false;
-                    cbGlobalTypes.Enabled = false;
+                    comboSimple.SelectedItem = -1;
+                    comboGlobal.SelectedItem = -1;
+                    comboSimple.Enabled = false;
+                    comboGlobal.Enabled = false;
                 }
             }
         }
-        #endregion
 
-        #region New
-        private void mnuNew_Click(object sender, System.EventArgs e)
+        private void MenuMouseNew_Click(object sender, EventArgs e)
         {
-            CreateRootNode();		// create a new treeview root node
-            schema = new XmlSchema();	// create a new schema
-            CompileSchema();		// compile and show it
+            CreateRootNode();
+            schemaDoc = new XmlSchema();
+            CompileSchema();
         }
-        #endregion
 
-
-
-
-
-
-
-
-        #region Remove Node
-        // The parent type determines from what list the selected item must be removed.
-        // Use the image index in the tree view to figure out the parent type.
-        private void mnuRemoveNode_Click(object sender, System.EventArgs e)
+        private void mnuRemoveNode_Click(object sender, EventArgs e)
         {
-            TreeNode tnParent = tvSchema.SelectedNode.Parent;
-            XmlSchemaObject obj = tvSchema.SelectedNode.Tag as XmlSchemaObject;
+            TreeNode tnParent = schemaTree.SelectedNode.Parent;
+            XmlSchemaObject obj = schemaTree.SelectedNode.Tag as XmlSchemaObject;
             bool success = false;
-            // if the node to remove has a parent and is of an XmlSchemaObject type...
             if ((tnParent != null) && (obj != null))
             {
-                // look at the tree node image index to figure out what the parent is!
-                switch ((TreeViewImages)tnParent.ImageIndex)
+                switch ((ObjectType)tnParent.ImageIndex)
                 {
-                    // if the parent is the schema root:
-                    case TreeViewImages.Schema:
-                        {
-                            // remove the object from the schema and from the global list
-                            schema.Items.Remove(obj);
-                            int idx = cbGlobalTypes.FindStringExact(tvSchema.SelectedNode.Text);
+                    case ObjectType.Schema:                        
+                            schemaDoc.Items.Remove(obj);
+                            int idx = comboGlobal.FindStringExact(schemaTree.SelectedNode.Text);
                             if (idx != -1)
-                            {
-                                cbGlobalTypes.Items.RemoveAt(idx);
-                            }
+                                  comboGlobal.Items.RemoveAt(idx);
                             success = true;
                             break;
-                        }
-
-                    // if the parent is an annotation type
-                    case TreeViewImages.Annotation:
-                        {
-                            XmlSchemaAnnotation annot = tnParent.Tag as XmlSchemaAnnotation;
-                            if (annot != null)
+                    case ObjectType.SimpleType:
                             {
-                                annot.Items.Remove(obj);
-                                success = true;
-                            }
-                            break;
-                        }
-
-                    // if the parent is a simple type
-                    case TreeViewImages.SimpleType:
-                        {
-                            // a simple type can have an annotation or a facet type as children
-                            XmlSchemaSimpleType st = tnParent.Tag as XmlSchemaSimpleType;
-                            if (obj is XmlSchemaAnnotation)
-                            {
-                                // remove from annotation list if it's an annotation type
-                                st.Annotation.Items.Remove(obj);
-                                success = true;
-                            }
-                            else if (obj is XmlSchemaFacet)
-                            {
-                                XmlSchemaSimpleTypeRestriction rest = st.Content as XmlSchemaSimpleTypeRestriction;
-                                if (rest != null)
+                                XmlSchemaSimpleType st = tnParent.Tag as XmlSchemaSimpleType;
+                                if (obj is XmlSchemaAnnotation)
                                 {
-                                    // remove from facet list if it's a facet type
-                                    rest.Facets.Remove(obj);
+                                    st.Annotation.Items.Remove(obj);
                                     success = true;
                                 }
-                            }
-                            break;
-                        }
-
-                    // if the parent is a complex type...
-                    case TreeViewImages.ComplexType:
-                        {
-                            XmlSchemaComplexType ct = tnParent.Tag as XmlSchemaComplexType;
-                            if (ct != null)
-                            {
-                                // then we are removing an attribute
-                                if (obj is XmlSchemaAttribute)
+                                else if (obj is XmlSchemaFacet)
                                 {
-                                    ct.Attributes.Remove(obj);
-                                    success = true;
-                                }
-                                // or an annotation
-                                else if (obj is XmlSchemaAnnotation)
-                                {
-                                    ct.Annotation.Items.Remove(obj);
-                                    success = true;
-                                }
-                                // or an element type
-                                else
-                                {
-                                    XmlSchemaSequence seq = ct.Particle as XmlSchemaSequence;
-                                    if (seq != null)
+                                    XmlSchemaSimpleTypeRestriction rest = st.Content as XmlSchemaSimpleTypeRestriction;
+                                    if (rest != null)
                                     {
-                                        seq.Items.Remove(obj);
+                                        rest.Facets.Remove(obj);
                                         success = true;
                                     }
                                 }
+                                break;
                             }
+                    case ObjectType.ComplexType:
+                        {
+                        XmlSchemaComplexType ct = tnParent.Tag as XmlSchemaComplexType;
+                        if (ct != null)
+                        {
+                            if (obj is XmlSchemaAttribute)
+                            {
+                                ct.Attributes.Remove(obj);
+                                success = true;
+                            }
+                            else if (obj is XmlSchemaAnnotation)
+                            {
+                                ct.Annotation.Items.Remove(obj);
+                                success = true;
+                            }
+                            else
+                            {
+                                XmlSchemaSequence seq = ct.Particle as XmlSchemaSequence;
+                                if (seq != null)
+                                {
+                                    seq.Items.Remove(obj);
+                                    success = true;
+                                }
+                            }
+                        }
                             break;
                         }
                 }
             }
-            // if successful, remove the node from the tree view
             if (success)
             {
-                tnParent.Nodes.Remove(tvSchema.SelectedNode);
+                tnParent.Nodes.Remove(schemaTree.SelectedNode);
                 CompileSchema();
             }
-            else
-            {
-                MessageBox.Show("Unable to remove this node");
-            }
+            else        
+                MessageBox.Show("Unable to remove this node");           
         }
-        #endregion
 
-        #endregion
-
-
-        #region Events
-
-        #region TreeView PreEventLabelChanged and EventLabelChanged
-        // exclude certain tree nodes from being editable
+                
         private void PreEventLabelChanged(object sender, NodeLabelEditEventArgs e)
         {
-            prevLabel = tvSchema.SelectedNode.Text;
+            prevLabel = schemaTree.SelectedNode.Text;
             if ((e.Node.Tag is XmlSchemaFacet) ||
                 (e.Node.Tag is XmlSchemaAnnotation) ||
                 (e.Node.Tag is XmlSchemaDocumentation) ||
@@ -1129,263 +842,136 @@ namespace xmlStructureEditor
 
         private void EventLabelChanged(object sender, NodeLabelEditEventArgs e)
         {
-            // if a node is selected...
-            if (e.Node != null)
-            {
-                // and a label has been changed... (e.Label==null if ESC key pressed)
-                if (e.Label != null)
-                {
-                    // then change the name of the type in the schema
+            if (e.Node != null)            
+                if (e.Label != null)                
                     UpdateTypeAndName(null, e.Label, null);
-
-                    // if this is a root node...
-                    if (e.Node.Parent == tvSchema.Nodes[0])
+                    if (e.Node.Parent == schemaTree.Nodes[0])
                     {
-                        // ...then also change the name in the global list
-                        // (this is not case sensitive!)
-                        int idx = cbGlobalTypes.FindStringExact(prevLabel);
-                        if (idx != -1)
-                        {
-                            cbGlobalTypes.Items[idx] = new GlobalElementType(e.Label, ((GlobalElementType)cbGlobalTypes.Items[idx]).type);
-                        }
+                        int idx = comboGlobal.FindStringExact(prevLabel);
+                        if (idx != -1)                       
+                            comboGlobal.Items[idx] = new NodeElementType(e.Label, ((NodeElementType)comboGlobal.Items[idx]).nodeType);
+                     
                     }
-                }
-            }
         }
-        #endregion
-
-        #region EventTreeViewKeyPress
-        // shortcuts:
-        // F2 - edit tree node label
-        // Ctrl+A - bring up popup menu to Add a subnode
-        // Ctrl+T - go to Top of tree
-        // Ctrl+P - go to Parent of currently selected node
-        private void EventTreeViewKeyUp(object sender, KeyEventArgs e)
-        {
-            e.Handled = false;
-            // F2
-            if (e.KeyCode == Keys.F2)
-            {
-                if (tvSchema.SelectedNode != tvSchema.Nodes[0])
-                {
-                    tvSchema.SelectedNode.BeginEdit();
-                    e.Handled = true;
-                }
-            }
-            // Ctrl+A
-            else if ((e.KeyCode == Keys.A) && (e.Modifiers == Keys.Control))
-            {
-                e.Handled = true;
-                tvcmSchema.Show(this, tvSchema.Location + new Size(50, 50));
-            }
-            // Ctrl+T
-            else if ((e.KeyCode == Keys.T) && (e.Modifiers == Keys.Control))
-            {
-                e.Handled = true;
-                tvSchema.SelectedNode = tvSchema.Nodes[0];
-            }
-            // Ctrl+P
-            else if ((e.KeyCode == Keys.P) && (e.Modifiers == Keys.Control))
-            {
-                e.Handled = true;
-                TreeNode node = tvSchema.SelectedNode.Parent;
-                if (node != null)
-                {
-                    tvSchema.SelectedNode = node;
-                }
-            }
-        }
-        #endregion
-
-        #region Schema Text Box Lost Focus
-
-        #region TreeView MouseDown
-        // On a mouse down, we want to select the node on which the mouse clicked.
-        // This way we know what node the user right-clicked on when adding sub-nodes
+        
         private void EventMouseDown(object sender, MouseEventArgs e)
         {
-            TreeNode tn = tvSchema.GetNodeAt(e.X, e.Y);
+            TreeNode tn = schemaTree.GetNodeAt(e.X, e.Y);
             if (tn != null)
-            {
-                tvSchema.SelectedNode = tn;
-            }
+                   schemaTree.SelectedNode = tn;            
         }
-        #endregion
 
-        #region TreeView AfterSelect
-        // After selecting a node, we want to:
-        // 1. highlight the line in the schema that corresponds to the tree node
-        // 2. update the simple and global type combo boxes to show what the type is for the selected node.
         private void tvSchema_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
         {
             XmlSchemaObject obj = e.Node.Tag as XmlSchemaObject;
-            // if this is a schema object...
-            if (obj != null)
+             if (obj != null)
             {
 
-                // Update simple and global type combo boxes.
-                // Get the name of the element type so that we can find it in the simple or global type list
-                XmlQualifiedName name = null;		// assume failure
+                XmlQualifiedName name = null;
                 if (obj is XmlSchemaAttribute)
-                {
-                    // this is easy.
-                    name = ((XmlSchemaAttribute)obj).SchemaTypeName;
-                }
+                    name = ((XmlSchemaAttribute)obj).SchemaTypeName;              
                 else if (obj is XmlSchemaSimpleType)
                 {
-                    // if it's a simple type, get the restriction type, if it exists
-                    XmlSchemaSimpleTypeRestriction restriction = ((XmlSchemaSimpleType)obj).Content as XmlSchemaSimpleTypeRestriction;
-                    if (restriction != null)
-                    {
-                        name = restriction.BaseTypeName;
-                    }
+                     XmlSchemaSimpleTypeRestriction restriction = ((XmlSchemaSimpleType)obj).Content as XmlSchemaSimpleTypeRestriction;
+                    if (restriction != null)                    
+                        name = restriction.BaseTypeName;                    
                 }
                 else if (obj is XmlSchemaElement)
-                {
-                    // if it's an element, determine if it's a simple type subnode of a complex type...
-                    // and then get the restriction type, if it exists
+                {                 
                     XmlSchemaElement el = obj as XmlSchemaElement;
                     if (el.SchemaType is XmlSchemaSimpleType)
                     {
                         XmlSchemaSimpleType st = el.SchemaType as XmlSchemaSimpleType;
                         XmlSchemaSimpleTypeRestriction rest = st.Content as XmlSchemaSimpleTypeRestriction;
-                        if (rest != null)
-                        {
-                            name = rest.BaseTypeName;
-                        }
+                        if (rest != null)                     
+                            name = rest.BaseTypeName;                        
                     }
                     else
                     {
-                        // otherwise get the element name
                         name = el.SchemaTypeName;
-
-                        // if the name is null, then there must be a reference instead
-                        if (name.Name == "")
-                        {
-                            name = el.RefName;
-                        }
+                        if (name.Name == "")                   
+                            name = el.RefName;                        
                     }
                 }
-
-                // select the name from either the simple type list or the global element type list
                 if (name != null)
                 {
-                    // see if the name exists in the simple type list
-                    int idx = cbSimpleTypes.FindStringExact(name.Name);
-                    cbSimpleTypes.SelectedIndex = idx;
-                    cbSimpleTypes.Enabled = true;
-
-                    // see if the name exists in the complex type list
-                    idx = cbGlobalTypes.FindStringExact(name.Name);
-                    cbGlobalTypes.SelectedIndex = idx;
-                    cbGlobalTypes.Enabled = true;
+                    int idx = comboSimple.FindStringExact(name.Name);
+                    comboSimple.SelectedIndex = idx;
+                    comboSimple.Enabled = true;
+                    idx = comboGlobal.FindStringExact(name.Name);
+                    comboGlobal.SelectedIndex = idx;
+                    comboGlobal.Enabled = true;
                 }
                 else
                 {
-                    // if there is no name, then disable the comboboxes
-                    cbSimpleTypes.SelectedIndex = -1;
-                    cbGlobalTypes.SelectedIndex = -1;
-                    cbSimpleTypes.Enabled = false;
-                    cbGlobalTypes.Enabled = false;
+                    comboSimple.SelectedIndex = -1;
+                    comboGlobal.SelectedIndex = -1;
+                    comboSimple.Enabled = false;
+                    comboGlobal.Enabled = false;
                 }
             }
             else
             {
-                // if this isn't a schema object, then disable the comboboxes
-                cbSimpleTypes.SelectedIndex = -1;
-                cbGlobalTypes.SelectedIndex = -1;
-                cbSimpleTypes.Enabled = false;
-                cbGlobalTypes.Enabled = false;
+                comboSimple.SelectedIndex = -1;
+                comboGlobal.SelectedIndex = -1;
+                comboSimple.Enabled = false;
+                comboGlobal.Enabled = false;
             }
         }
-        #endregion
-
-        #region cbSimpleTypes Index Changed
-        // the user has selected a simple type.  Select it and clear the global type combo box.
-        private void cbSimpleTypes_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void cbSimpleTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbSimpleTypes.SelectedIndex != -1)
+            if (comboSimple.SelectedIndex != -1)
             {
-                UpdateTypeAndName(cbSimpleTypes.SelectedItem.ToString(), null, "http://www.w3.org/2001/XMLSchema");
-                cbGlobalTypes.SelectedIndex = -1;
+                UpdateTypeAndName(comboSimple.SelectedItem.ToString(), null, "http://www.w3.org/2001/XMLSchema");
+                comboGlobal.SelectedIndex = -1;
             }
         }
-        #endregion
 
-        #region cbGlobalTypes Index Changed
-        // the user has selected a global type.  Select it and clear the simple type combo box.
-        private void cbGlobalTypes_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void cbGlobalTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbGlobalTypes.SelectedIndex != -1)
+            if (comboGlobal.SelectedIndex != -1)
             {
-                UpdateTypeAndName(cbGlobalTypes.SelectedItem.ToString(), null, null);
-                cbSimpleTypes.SelectedIndex = -1;
+                UpdateTypeAndName(comboGlobal.SelectedItem.ToString(), null, null);
+                comboSimple.SelectedIndex = -1;
             }
         }
-        #endregion
-
-
-        #endregion
-
-        #region Misc. Helpers
-
-        #region CreateRootNode
-        // This helper function destroys the existing tree and creates a new tree.
-        // It also clears the global type list, since there are no global types defined
-        //	with a blank tree.
+        
         private void CreateRootNode()
         {
-            tvSchema.Nodes.Clear();
+            schemaTree.Nodes.Clear();
             TreeNode rootNode = new TreeNode("Schema:");
-            tvSchema.Nodes.Add(rootNode);
-            rootNode.ImageIndex = (int)TreeViewImages.Schema;
-            rootNode.SelectedImageIndex = (int)TreeViewImages.Schema;
-            cbGlobalTypes.Items.Clear();
+            schemaTree.Nodes.Add(rootNode);
+            rootNode.ImageIndex = (int)ObjectType.Schema;
+            rootNode.SelectedImageIndex = (int)ObjectType.Schema;
+            comboGlobal.Items.Clear();
         }
-        #endregion
-        #region Schema Validation Handler
-        // report any errors to the schema error edit box
+
         private void SchemaValidationHandler(object sender, ValidationEventArgs args)
         {
             Console.WriteLine(args.Message);
-            //		edSchemaErrors.Text+=args.Message+"\r\n";
         }
-        #endregion
-        #region CompileSchema
-        // Compile the schema as it exists in the XmlSchema structure, displaying any
-        // errors in the schema error edit box and displaying the schema itself in
-        // the schema edit box.
+        
         private void CompileSchema()
         {
-            schema.Compile(new ValidationEventHandler(SchemaValidationHandler));
+            schemaDoc.Compile(new ValidationEventHandler(SchemaValidationHandler));            
             XmlTextWriter wr = new XmlTextWriter("CurrentDocument.xsd", Encoding.UTF8);
-            schema.Write(wr);            
+            schemaDoc.Write(wr);            
             wr.Close();
             this.schemaBrowser.Navigate(Application.StartupPath + "\\CurrentDocument.xsd");
         }
-        #endregion
 
-        #region CreateNode
-        // This helper function creates a subnode off of the selected node and requests
-        // that the node label be immediately editable.
         private TreeNode CreateNode(string name)
         {
-            TreeNode tn = tvSchema.SelectedNode;
+            TreeNode tn = schemaTree.SelectedNode;
             TreeNode newNode = new TreeNode(name);
             tn.Nodes.Add(newNode);
             tn.Expand();
-            tvSchema.SelectedNode = newNode;
+            schemaTree.SelectedNode = newNode;
             newNode.BeginEdit();
             return newNode;
         }
-        #endregion
 
-        #region AddToCollection
-        // Add a schema type to the specified schema object collection.
-        // The tree node references the schema type being added.
-        // The image indices are set.
-        // The schema is recompiled, which shows any errors and updates the schema display.
-        void AddToCollection(XmlSchemaObjectCollection coll, XmlSchemaObject obj, TreeNode node, TreeViewImages imgIdx)
+        void addCollection(XmlSchemaObjectCollection coll, XmlSchemaObject obj, TreeNode node, ObjectType imgIdx)
         {
             coll.Add(obj);
             node.Tag = obj;
@@ -1393,168 +979,116 @@ namespace xmlStructureEditor
             node.SelectedImageIndex = (int)imgIdx;
             CompileSchema();
         }
-        #endregion
 
-        #region ChangeElementToComplexType
-        // When adding a subnode to an element or a simple type, the node must be changed to a complex type.
+
         private XmlSchemaComplexType ChangeElementToComplexType(XmlSchemaElement el, TreeNode tn)
         {
-            // if the element is currently a reference, we need to remove the reference
-            // and set the name to something, which in this case is the old ref name.
             if (el.RefName != null)
             {
                 el.Name = el.RefName.Name;
                 el.RefName = null;
             }
-            // creat the complex type.
             XmlSchemaComplexType ct = new XmlSchemaComplexType();
             el.SchemaType = ct;
-            // a complex type cannot have a type name
             el.SchemaTypeName = null;
-            // create the sequence
             XmlSchemaSequence sequence = new XmlSchemaSequence();
             ct.Particle = sequence;
-
-            // update the image indices
-            tn.ImageIndex = (int)TreeViewImages.ComplexType;
-            tn.SelectedImageIndex = (int)TreeViewImages.ComplexType;
+            tn.ImageIndex = (int)ObjectType.ComplexType;
+            tn.SelectedImageIndex = (int)ObjectType.ComplexType;
 
             return ct;
         }
-        #endregion
 
-        #region AddToComplexType
-        // add a type to a complex type
-        private bool AddToComplexType(object obj, XmlSchemaObject item, TreeNode newNode, TreeViewImages imgIdx)
+        private bool AddToComplexType(object obj, XmlSchemaObject item, TreeNode newNode, ObjectType imgIdx)
         {
             bool success = true;
             XmlSchemaElement el = obj as XmlSchemaElement;
             XmlSchemaComplexType complexType = obj as XmlSchemaComplexType;
-
-            // is it an element...
             if (el != null)
             {
-                // of complex type (so we know it's a local complex type, not a global one!)
                 XmlSchemaComplexType ct = el.SchemaType as XmlSchemaComplexType;
                 if (ct != null)
                 {
-                    // does it have a sequence?
                     XmlSchemaSequence seq = ct.Particle as XmlSchemaSequence;
                     if (seq != null)
-                    {
-                        // yes--add it to the sequence collection
-                        AddToCollection(seq.Items, item, newNode, imgIdx);
-                    }
+                        addCollection(seq.Items, item, newNode, imgIdx);
                     else
                     {
-                        // no--we can't add it.
                         MessageBox.Show("Complex type is missing sequence!");
                         success = false;
                     }
                 }
                 else
                 {
-                    // change the basic element to a complex type by adding a sequence and then
-                    // add the sub-element
                     ct = ChangeElementToComplexType(el, newNode.Parent);
-                    AddToCollection(((XmlSchemaSequence)ct.Particle).Items, item, newNode, imgIdx);
+                    addCollection(((XmlSchemaSequence)ct.Particle).Items, item, newNode, imgIdx);
                 }
             }
-            // or is it a global complex type...
             else if (complexType != null)
             {
                 XmlSchemaSequence seq = complexType.Particle as XmlSchemaSequence;
-                // which should have a sequence!
                 if (seq != null)
-                {
-                    // yes--add it to the collection
-                    AddToCollection(seq.Items, item, newNode, imgIdx);
-                }
+                     addCollection(seq.Items, item, newNode, imgIdx);
                 else
                 {
-                    // no--we can't add it.
                     MessageBox.Show("Complex type is missing sequence!");
                     success = false;
                 }
             }
             else
-            {
-                // failure--current node is not an element and not a complex type
                 success = false;
-            }
             return success;
         }
-        #endregion
 
-        #region UpdateTypeAndName
-        // This is a dual purpose function that updates either the type or the name.
-        // It can also update both at once, but isn't used in that way in this program.
-        // Pass in a null for typeName if only changing the name.
-        // Pass in a null for name if only changing the typeName.
-        // Pass in a null for the nameSpace if the typeName is a global type.
         private void UpdateTypeAndName(string typeName, string name, string nameSpace)
         {
-            // Is the type referenced by the tree node an XmlSchemaObject?
-            XmlSchemaObject obj = tvSchema.SelectedNode.Tag as XmlSchemaObject;
+            XmlSchemaObject obj = schemaTree.SelectedNode.Tag as XmlSchemaObject;
             if (obj != null)
             {
-                // is it an attribute?
                 if (obj is XmlSchemaAttribute)
                 {
                     XmlSchemaAttribute attrib = obj as XmlSchemaAttribute;
-                    // if we're changing the name:
                     if (name != null)
                     {
                         attrib.Name = name;
                         CompileSchema();
                     }
-                    // if we're changing the type:
                     if (typeName != null)
                     {
-                        // if the name refers to a global attribute, then use ref instead of type
-                        int idx = cbGlobalTypes.FindStringExact(typeName);
-                        GlobalElementType glet = null;
+                        int idx = comboGlobal.FindStringExact(typeName);
+                        NodeElementType glet = null;
                         if (idx != -1)
                         {
-                            glet = cbGlobalTypes.Items[idx] as GlobalElementType;
+                            glet = comboGlobal.Items[idx] as NodeElementType;
                         }
-                        // if a global exists of this type...
-                        if ((glet != null) && (glet.type is XmlSchemaAttribute))
+                        if ((glet != null) && (glet.nodeType is XmlSchemaAttribute))
                         {
-                            // then get rid of the type name and use a ref instead
                             attrib.SchemaTypeName = null;
                             attrib.RefName = new XmlQualifiedName(typeName, nameSpace);
-                            // can't have a name
                             attrib.Name = null;
                         }
                         else
                         {
-                            // otherwise, use a type name and get rid of the ref
                             attrib.SchemaTypeName = new XmlQualifiedName(typeName, nameSpace);
                             attrib.RefName = null;
                             if (attrib.Name == null)
                             {
-                                // if changing from ref to type, we need some sort of default name
-                                attrib.Name = tvSchema.SelectedNode.Text;
+                                attrib.Name = schemaTree.SelectedNode.Text;
                             }
                         }
                         CompileSchema();
-                        // update the tree node name
-                        tvSchema.SelectedNode.Text = attrib.QualifiedName.Name;
+                        schemaTree.SelectedNode.Text = attrib.QualifiedName.Name;
                     }
                 }
-                // is it an element?
                 else if (obj is XmlSchemaElement)
                 {
                     XmlSchemaElement el = obj as XmlSchemaElement;
-                    // if we're changing the name:
                     if (name != null)
                     {
                         el.Name = name;
                         CompileSchema();
                     }
-
-                    // if we're changing the type:
+                    
                     if (typeName != null)
                     {
                         if (el.SchemaType is XmlSchemaSimpleType)
@@ -1569,17 +1103,11 @@ namespace xmlStructureEditor
                         }
                         else
                         {
-                            // if the name refers to a global element, then use ref instead of type
-                            // Same deal as for changing the element type name.
-                            // Since the SchemaTypeName and RefName are not part of any base class shared
-                            // between the SchemaXmlAttribute and SchemaXmlElement, we need separate code.
-                            int idx = cbGlobalTypes.FindStringExact(typeName);
-                            GlobalElementType glet = null;
+                            int idx = comboGlobal.FindStringExact(typeName);
+                            NodeElementType glet = null;
                             if (idx != -1)
-                            {
-                                glet = cbGlobalTypes.Items[idx] as GlobalElementType;
-                            }
-                            if ((glet != null) && (glet.type is XmlSchemaElement))
+                                glet = comboGlobal.Items[idx] as NodeElementType;                            
+                            if ((glet != null) && (glet.nodeType is XmlSchemaElement))
                             {
                                 el.SchemaTypeName = null;
                                 el.RefName = new XmlQualifiedName(typeName, nameSpace);
@@ -1590,116 +1118,67 @@ namespace xmlStructureEditor
                                 el.SchemaTypeName = new XmlQualifiedName(typeName, nameSpace);
                                 el.RefName = null;
                                 if (el.Name == null)
-                                {
-                                    el.Name = tvSchema.SelectedNode.Text;
-                                }
+                                    el.Name = schemaTree.SelectedNode.Text;                                
                             }
                             CompileSchema();
-                            tvSchema.SelectedNode.Text = el.QualifiedName.Name;
+                            schemaTree.SelectedNode.Text = el.QualifiedName.Name;
                         }
                     }
                 }
-                // is it a simple type?
                 else if (obj is XmlSchemaSimpleType)
                 {
                     XmlSchemaSimpleType st = obj as XmlSchemaSimpleType;
-                    // if we're changing the name:
                     if (name != null)
                     {
                         st.Name = name;
                         CompileSchema();
                     }
 
-                    // if we're changing the type name:
                     if (typeName != null)
                     {
-                        // this must be done in the Restriction object
                         XmlSchemaSimpleTypeRestriction restriction = st.Content as XmlSchemaSimpleTypeRestriction;
                         if (restriction != null)
                         {
                             restriction.BaseTypeName = new XmlQualifiedName(typeName, nameSpace);
                             CompileSchema();
-                            cbGlobalTypes.SelectedIndex = -1;
+                            comboGlobal.SelectedIndex = -1;
                         }
                     }
                 }
-                // is it a complex type?
                 else if (obj is XmlSchemaComplexType)
                 {
-                    // if we're changing the name:
                     if (name != null)
                     {
                         ((XmlSchemaComplexType)obj).Name = name;
                         CompileSchema();
                     }
-                    // there is no such thing as changing the type of a complex type
                 }
             }
         }
-        #endregion
 
-        #region Add Facet
-        // Add a facet to a simple type.
-        bool AddFacet(XmlSchemaFacet facet, string val, TreeViewImages imgIdx)
-        {
-            // get the simple type.
-            XmlSchemaSimpleType st = tvSchema.SelectedNode.Tag as XmlSchemaSimpleType;
-
-            // assume failure
-            XmlSchemaSimpleTypeRestriction rs = null;
-            bool success = false;
-
-            // if the simple type exists, get the restriction type
-            if (st != null)
-            {
-                rs = st.Content as XmlSchemaSimpleTypeRestriction;
-            }
-
-            // if the restriction type exists...
-            if (rs != null)
-            {
-                // create the node and add it to the facet collection
-                TreeNode newNode = CreateNode(facet.ToString());
-                facet.Value = val;
-                rs.Facets.Add(facet);
-                CompileSchema();
-                success = true;
-            }
-            return success;
-        }
-        #endregion
-
-        #region TextToNodeArray
-        // a helper to create some default documentation text.
         public static XmlNode[] TextToNodeArray(string text)
         {
             XmlDocument doc = new XmlDocument();
             return new XmlNode[1] { doc.CreateTextNode(text) };
         }
-        #endregion
 
-        #endregion
 
-        #region DecodeSchema
-
-        // stub that wraps the actual decoding in a try block so we can display errors
         private void DecodeSchema(XmlSchema schema, TreeNode node)
         {
             try
             {
-                DecodeSchema2(schema, node);
+                DecSchem(schema, node);
             }
             catch (Exception err)
             {
+                MessageBox.Show(err.ToString());
             }
         }
 
-        // recursive decoder
-        private TreeNode DecodeSchema2(XmlSchemaObject obj, TreeNode node)
+        private TreeNode DecSchem(XmlSchemaObject obj, TreeNode node)
         {
             TreeNode newNode = node;
 
-            // convert the object to all types and then check what type actually exists
             XmlSchemaAnnotation annot = obj as XmlSchemaAnnotation;
             XmlSchemaAttribute attrib = obj as XmlSchemaAttribute;
             XmlSchemaFacet facet = obj as XmlSchemaFacet;
@@ -1709,45 +1188,22 @@ namespace xmlStructureEditor
             XmlSchemaSimpleType simpleType = obj as XmlSchemaSimpleType;
             XmlSchemaComplexType complexType = obj as XmlSchemaComplexType;
 
-            // If the current node is the root node of the tree, then we are
-            // possibly adding a global attribute, element, simple type, or complex type.
-            if (node == tvSchema.Nodes[0])
+            if (node == schemaTree.Nodes[0])
             {
-                if (attrib != null)
-                {
-                    if (attrib.Name != null)
-                    {
-                        // add to global list
-                        cbGlobalTypes.Items.Add(new GlobalElementType(attrib.Name, attrib));
-                    }
-                }
-                else if (element != null)
-                {
-                    if (element.Name != null)
-                    {
-                        // add to global list
-                        cbGlobalTypes.Items.Add(new GlobalElementType(element.Name, element));
-                    }
-                }
-                else if (simpleType != null)
-                {
-                    if (simpleType.Name != null)
-                    {
-                        // add to global list
-                        cbGlobalTypes.Items.Add(new GlobalElementType(simpleType.Name, simpleType));
-                    }
-                }
-                else if (complexType != null)
-                {
-                    if (complexType.Name != null)
-                    {
-                        // add to global list
-                        cbGlobalTypes.Items.Add(new GlobalElementType(complexType.Name, complexType));
-                    }
-                }
+                if (attrib != null)                
+                    if (attrib.Name != null)                  
+                        comboGlobal.Items.Add(new NodeElementType(attrib.Name, attrib)); 
+                else if (element != null)                
+                    if (element.Name != null)                   
+                        comboGlobal.Items.Add(new NodeElementType(element.Name, element));
+                else if (simpleType != null)                
+                    if (simpleType.Name != null)                    
+                        comboGlobal.Items.Add(new NodeElementType(simpleType.Name, simpleType));
+                else if (complexType != null)                
+                    if (complexType.Name != null)  
+                        comboGlobal.Items.Add(new NodeElementType(complexType.Name, complexType));
             }
 
-            // if annotation, add a tree node and recurse for documentation and app info
             if (annot != null)
             {
                 newNode = new TreeNode("--annotation--");
@@ -1757,11 +1213,10 @@ namespace xmlStructureEditor
                 node.Nodes.Add(newNode);
                 foreach (XmlSchemaObject schemaObject in annot.Items)
                 {
-                    DecodeSchema2(schemaObject, newNode);
+                    DecSchem(schemaObject, newNode);
                 }
             }
             else
-                // if attribute, add a tree node
                 if (attrib != null)
                 {
                     newNode = new TreeNode(attrib.QualifiedName.Name);
@@ -1771,7 +1226,6 @@ namespace xmlStructureEditor
                     node.Nodes.Add(newNode);
                 }
                 else
-                    // if facet, add a tree node
                     if (facet != null)
                     {
                         newNode = new TreeNode(facet.ToString());
@@ -1781,7 +1235,6 @@ namespace xmlStructureEditor
                         node.Nodes.Add(newNode);
                     }
                     else
-                        // if documentation, add a tree node
                         if (doc != null)
                         {
                             newNode = new TreeNode("--documentation--");
@@ -1791,7 +1244,6 @@ namespace xmlStructureEditor
                             node.Nodes.Add(newNode);
                         }
                         else
-                            // if app info, add a tree node
                             if (appInfo != null)
                             {
                                 newNode = new TreeNode("--app info--");
@@ -1801,7 +1253,6 @@ namespace xmlStructureEditor
                                 node.Nodes.Add(newNode);
                             }
                             else
-                                // if an element, determine whether the element is a simple type or a complex type
                                 if (element != null)
                                 {
                                     XmlSchemaSimpleType st = element.SchemaType as XmlSchemaSimpleType;
@@ -1809,19 +1260,16 @@ namespace xmlStructureEditor
 
                                     if (st != null)
                                     {
-                                        // this is a simple type element.  Recurse.
-                                        TreeNode node2 = DecodeSchema2(st, newNode);
+                                        TreeNode node2 = DecSchem(st, newNode);
                                         node2.Text = element.Name;
                                     }
                                     else if (ct != null)
                                     {
-                                        // this is a complex type element.  Recurse.
-                                        TreeNode node2 = DecodeSchema2(ct, newNode);
+                                        TreeNode node2 = DecSchem(ct, newNode);
                                         node2.Text = element.Name;
                                     }
                                     else
                                     {
-                                        // This is a plain ol' fashioned element.
                                         newNode = new TreeNode(element.QualifiedName.Name);
                                         newNode.Tag = element;
                                         newNode.ImageIndex = 1;
@@ -1830,7 +1278,6 @@ namespace xmlStructureEditor
                                     }
                                 }
                                 else
-                                    // if a simple type, then add a tree node and recurse facets
                                     if (simpleType != null)
                                     {
                                         newNode = new TreeNode(simpleType.QualifiedName.Name);
@@ -1843,12 +1290,11 @@ namespace xmlStructureEditor
                                         {
                                             foreach (XmlSchemaFacet schemaObject in rest.Facets)
                                             {
-                                                DecodeSchema2(schemaObject, newNode);
+                                                DecSchem(schemaObject, newNode);
                                             }
                                         }
                                     }
                                     else
-                                        // if a complex type, add a tree node and recurse its sequence
                                         if (complexType != null)
                                         {
                                             newNode = new TreeNode(complexType.Name);
@@ -1862,12 +1308,11 @@ namespace xmlStructureEditor
                                             {
                                                 foreach (XmlSchemaObject schemaObject in seq.Items)
                                                 {
-                                                    DecodeSchema2(schemaObject, newNode);
+                                                    DecSchem(schemaObject, newNode);
                                                 }
                                             }
                                         }
 
-            // now recurse any object collection of the type.
             foreach (PropertyInfo property in obj.GetType().GetProperties())
             {
                 if (property.PropertyType.FullName == "System.Xml.Schema.XmlSchemaObjectCollection")
@@ -1875,51 +1320,52 @@ namespace xmlStructureEditor
                     XmlSchemaObjectCollection childObjectCollection = (XmlSchemaObjectCollection)property.GetValue(obj, null);
                     foreach (XmlSchemaObject schemaObject in childObjectCollection)
                     {
-                        DecodeSchema2(schemaObject, newNode);
+                        DecSchem(schemaObject, newNode);
                     }
                 }
             }
             return newNode;
         }
-        #endregion
 
         private void xmlBrowserWindow_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            // code to auto highlight 
-
-         
+            // code to auto highlight                    
           
+        }        
 
-
-
-        }
-
-        #endregion
-
-        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
-        {
-
-        }
-
-
-        #endregion
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Displays a SaveFileDialog so the user can save the Image
-            // assigned to Button2.
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "XML File|*.xml";
-            saveFileDialog.Title = "Save an XML File";
-            saveFileDialog.ShowDialog();
-
-            // If the file name is not an empty string open it for saving.
-            if (saveFileDialog.FileName != "")
+            if (mainTabs.SelectedIndex == 0)
             {
-                XmlTextWriter writer = new XmlTextWriter(saveFileDialog.OpenFile(), null);
-                writer.Formatting = Formatting.Indented;
-                xmlDoc.Save(writer);              
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "XML File|*.xml";
+                saveFileDialog.Title = "Save an XML File";
+                saveFileDialog.ShowDialog();
 
+                if (saveFileDialog.FileName != "")
+                {
+                    XmlTextWriter writer = new XmlTextWriter(saveFileDialog.OpenFile(), null);
+                    writer.Formatting = Formatting.Indented;
+                    xmlDoc.Save(writer);
+
+                }
+            }
+            else
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "XSD File|*.XSD";
+                saveFileDialog.Title = "Save an XSD File";
+                saveFileDialog.ShowDialog();
+
+                if (saveFileDialog.FileName != "")
+                {
+                    CompileSchema();
+                    StreamWriter sw = new StreamWriter(saveFileDialog.FileName.ToString(), false, System.Text.Encoding.UTF8);                    
+                    schemaDoc.Write(sw);
+                    sw.Flush();
+                    sw.Close();
+                }            
             }
 
         }
@@ -1931,26 +1377,44 @@ namespace xmlStructureEditor
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Displays a SaveFileDialog so the user can save the Image
-            // assigned to Button2.
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "XML File|*.xml";
-            saveFileDialog.Title = "Save an XML File";
-            saveFileDialog.ShowDialog();
+            if (mainTabs.SelectedIndex == 0)
+            {               
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "XML File|*.xml";
+                saveFileDialog.Title = "Save an XML File";
+                saveFileDialog.ShowDialog();
 
-            // If the file name is not an empty string open it for saving.
-            if (saveFileDialog.FileName != "")
+                if (saveFileDialog.FileName != "")
+                {
+                    XmlTextWriter writer = new XmlTextWriter(saveFileDialog.OpenFile(), null);
+                    writer.Formatting = Formatting.Indented;
+                    xmlDoc.Save(writer);
+
+                }
+            }
+            else
             {
-                XmlTextWriter writer = new XmlTextWriter(saveFileDialog.OpenFile(), null);
-                writer.Formatting = Formatting.Indented;
-                xmlDoc.Save(writer);
-
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "XSD File|*.XSD";
+                saveFileDialog.Title = "Save an XSD File";
+                saveFileDialog.ShowDialog();
+                
+                if (saveFileDialog.FileName != "")
+                {
+                    CompileSchema();
+                    StreamWriter sw = new StreamWriter(saveFileDialog.FileName.ToString(), false, System.Text.Encoding.UTF8);
+                    schemaDoc.Write(sw);
+                    sw.Flush();
+                    sw.Close();
+                }
             }
         }
 
-
-
-
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutBox abtBox = new AboutBox();
+            abtBox.ShowDialog();
+        }
 
 
     }
