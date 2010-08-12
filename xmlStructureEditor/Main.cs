@@ -1416,6 +1416,60 @@ namespace xmlStructureEditor
             abtBox.ShowDialog();
         }
 
+        private static bool isValid = true;      // If a validation error occurs,
+        // set this flag to false in the
+        // validation event handler. 
+        private void validateXMLFromSchemaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ValidateXml();
+        
+        
+        }
+
+        public void ValidateXml()
+        {
+            XmlTextWriter writer = new XmlTextWriter("temp.xml", null);
+            writer.Formatting = Formatting.Indented;
+            xmlDoc.Save(writer);
+            writer.Close();
+
+            CompileSchema();
+            StreamWriter sw = new StreamWriter("temp.xsd", false, System.Text.Encoding.UTF8);
+            schemaDoc.Write(sw);
+            sw.Flush();
+            sw.Close();
+
+            XmlTextReader r = new XmlTextReader("temp.xml");
+            XmlValidatingReader validator = new XmlValidatingReader(r);
+            validator.ValidationType = ValidationType.Schema;
+
+            XmlSchemaCollection schemas = new XmlSchemaCollection();
+            schemas.Add(null, "temp.xsd");
+            validator.Schemas.Add(schemas);
+
+            validator.ValidationEventHandler += new ValidationEventHandler(ValidationEventHandler);
+
+            try
+            {
+                while (validator.Read())
+                { }
+            }
+            catch (XmlException err)
+            {
+                this.txtOutput.Text += err + "\n";
+            }
+            finally
+            {
+                validator.Close();
+            }
+        }
+
+        private void ValidationEventHandler(object sender, ValidationEventArgs args)
+        {
+            txtOutput.Text += args.Message + "\n";            
+        }
+
+
 
     }
 }
