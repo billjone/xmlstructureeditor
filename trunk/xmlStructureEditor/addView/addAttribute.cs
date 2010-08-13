@@ -14,8 +14,8 @@ namespace xmlStructureEditor
         private string _attribName;
         private string _attribVal;
 
-        private EditBalloon v_editBalloon = new EditBalloon();
-        private EditBalloon a_editBalloon = new EditBalloon();
+        private eTip v_editBalloon = new eTip();
+        private eTip a_editBalloon = new eTip();
 
         public string getAttribName() { return _attribName; }
         public string getAttribVal() { return _attribVal; }

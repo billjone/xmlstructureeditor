@@ -13,7 +13,7 @@ namespace xmlStructureEditor
     {
 
         private string _elementName;
-        private EditBalloon editBalloon = new EditBalloon();
+        private eTip editBalloon = new eTip();
 
         public addElement()
         {
