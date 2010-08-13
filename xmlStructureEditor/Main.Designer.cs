@@ -47,6 +47,7 @@
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.validateXMLFromSchemaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,15 +59,15 @@
             this.tsStatusElementType = new System.Windows.Forms.ToolStripStatusLabel();
             this.mainTabs = new System.Windows.Forms.TabControl();
             this.tabXML = new System.Windows.Forms.TabPage();
+            this.txtOutput = new System.Windows.Forms.TextBox();
             this.xmlBrowserWindow = new System.Windows.Forms.WebBrowser();
             this.xmlTreeview = new System.Windows.Forms.TreeView();
             this.tabSchema = new System.Windows.Forms.TabPage();
-            this.schemaBrowser = new System.Windows.Forms.WebBrowser();
-            this.gbSelectType = new System.Windows.Forms.GroupBox();
-            this.comboGlobal = new System.Windows.Forms.ComboBox();
-            this.comboSimple = new System.Windows.Forms.ComboBox();
             this.lblGT = new System.Windows.Forms.Label();
+            this.comboGlobal = new System.Windows.Forms.ComboBox();
             this.lblST = new System.Windows.Forms.Label();
+            this.schemaBrowser = new System.Windows.Forms.WebBrowser();
+            this.comboSimple = new System.Windows.Forms.ComboBox();
             this.schemaTree = new System.Windows.Forms.TreeView();
             this.schemaTreeView = new System.Windows.Forms.ContextMenu();
             this.RightMenuAddElement = new System.Windows.Forms.MenuItem();
@@ -98,14 +99,18 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.validateXMLFromSchemaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.txtOutput = new System.Windows.Forms.TextBox();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel6 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel7 = new System.Windows.Forms.ToolStripLabel();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusBar.SuspendLayout();
             this.mainTabs.SuspendLayout();
             this.tabXML.SuspendLayout();
             this.tabSchema.SuspendLayout();
-            this.gbSelectType.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -144,7 +149,7 @@
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -251,6 +256,13 @@
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.optionsToolStripMenuItem.Text = "&Options";
             // 
+            // validateXMLFromSchemaToolStripMenuItem
+            // 
+            this.validateXMLFromSchemaToolStripMenuItem.Name = "validateXMLFromSchemaToolStripMenuItem";
+            this.validateXMLFromSchemaToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+            this.validateXMLFromSchemaToolStripMenuItem.Text = "Validate XML from Schema";
+            this.validateXMLFromSchemaToolStripMenuItem.Click += new System.EventHandler(this.validateXMLFromSchemaToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -325,10 +337,10 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mainTabs.Controls.Add(this.tabXML);
             this.mainTabs.Controls.Add(this.tabSchema);
-            this.mainTabs.Location = new System.Drawing.Point(37, 27);
+            this.mainTabs.Location = new System.Drawing.Point(90, 27);
             this.mainTabs.Name = "mainTabs";
             this.mainTabs.SelectedIndex = 0;
-            this.mainTabs.Size = new System.Drawing.Size(1064, 474);
+            this.mainTabs.Size = new System.Drawing.Size(1011, 474);
             this.mainTabs.TabIndex = 4;
             // 
             // tabXML
@@ -339,10 +351,18 @@
             this.tabXML.Location = new System.Drawing.Point(4, 22);
             this.tabXML.Name = "tabXML";
             this.tabXML.Padding = new System.Windows.Forms.Padding(3);
-            this.tabXML.Size = new System.Drawing.Size(1056, 448);
+            this.tabXML.Size = new System.Drawing.Size(1003, 448);
             this.tabXML.TabIndex = 0;
             this.tabXML.Text = "XML";
             this.tabXML.UseVisualStyleBackColor = true;
+            // 
+            // txtOutput
+            // 
+            this.txtOutput.Location = new System.Drawing.Point(401, 368);
+            this.txtOutput.Multiline = true;
+            this.txtOutput.Name = "txtOutput";
+            this.txtOutput.Size = new System.Drawing.Size(649, 72);
+            this.txtOutput.TabIndex = 4;
             // 
             // xmlBrowserWindow
             // 
@@ -352,7 +372,7 @@
             this.xmlBrowserWindow.Location = new System.Drawing.Point(400, 6);
             this.xmlBrowserWindow.MinimumSize = new System.Drawing.Size(20, 20);
             this.xmlBrowserWindow.Name = "xmlBrowserWindow";
-            this.xmlBrowserWindow.Size = new System.Drawing.Size(650, 356);
+            this.xmlBrowserWindow.Size = new System.Drawing.Size(597, 356);
             this.xmlBrowserWindow.TabIndex = 3;
             this.xmlBrowserWindow.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.xmlBrowserWindow_DocumentCompleted);
             // 
@@ -361,15 +381,18 @@
             this.xmlTreeview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.xmlTreeview.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xmlTreeview.Location = new System.Drawing.Point(3, 3);
+            this.xmlTreeview.Location = new System.Drawing.Point(6, 3);
             this.xmlTreeview.Name = "xmlTreeview";
-            this.xmlTreeview.Size = new System.Drawing.Size(391, 437);
+            this.xmlTreeview.Size = new System.Drawing.Size(388, 437);
             this.xmlTreeview.TabIndex = 2;
             // 
             // tabSchema
             // 
+            this.tabSchema.Controls.Add(this.lblGT);
+            this.tabSchema.Controls.Add(this.comboGlobal);
+            this.tabSchema.Controls.Add(this.lblST);
             this.tabSchema.Controls.Add(this.schemaBrowser);
-            this.tabSchema.Controls.Add(this.gbSelectType);
+            this.tabSchema.Controls.Add(this.comboSimple);
             this.tabSchema.Controls.Add(this.schemaTree);
             this.tabSchema.Location = new System.Drawing.Point(4, 22);
             this.tabSchema.Name = "tabSchema";
@@ -378,6 +401,34 @@
             this.tabSchema.TabIndex = 1;
             this.tabSchema.Text = "Schema";
             this.tabSchema.UseVisualStyleBackColor = true;
+            // 
+            // lblGT
+            // 
+            this.lblGT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGT.Location = new System.Drawing.Point(6, 364);
+            this.lblGT.Name = "lblGT";
+            this.lblGT.Size = new System.Drawing.Size(80, 16);
+            this.lblGT.TabIndex = 1;
+            this.lblGT.Text = "Schema Types";
+            // 
+            // comboGlobal
+            // 
+            this.comboGlobal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboGlobal.Location = new System.Drawing.Point(92, 361);
+            this.comboGlobal.Name = "comboGlobal";
+            this.comboGlobal.Size = new System.Drawing.Size(168, 21);
+            this.comboGlobal.Sorted = true;
+            this.comboGlobal.TabIndex = 3;
+            this.comboGlobal.SelectedIndexChanged += new System.EventHandler(this.cbGlobalTypes_SelectedIndexChanged);
+            // 
+            // lblST
+            // 
+            this.lblST.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblST.Location = new System.Drawing.Point(6, 337);
+            this.lblST.Name = "lblST";
+            this.lblST.Size = new System.Drawing.Size(80, 16);
+            this.lblST.TabIndex = 0;
+            this.lblST.Text = "Types";
             // 
             // schemaBrowser
             // 
@@ -389,31 +440,6 @@
             this.schemaBrowser.Name = "schemaBrowser";
             this.schemaBrowser.Size = new System.Drawing.Size(645, 534);
             this.schemaBrowser.TabIndex = 7;
-            // 
-            // gbSelectType
-            // 
-            this.gbSelectType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.gbSelectType.Controls.Add(this.comboGlobal);
-            this.gbSelectType.Controls.Add(this.comboSimple);
-            this.gbSelectType.Controls.Add(this.lblGT);
-            this.gbSelectType.Controls.Add(this.lblST);
-            this.gbSelectType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbSelectType.Location = new System.Drawing.Point(6, 337);
-            this.gbSelectType.Name = "gbSelectType";
-            this.gbSelectType.Size = new System.Drawing.Size(280, 96);
-            this.gbSelectType.TabIndex = 6;
-            this.gbSelectType.TabStop = false;
-            this.gbSelectType.Text = "Select Type";
-            // 
-            // comboGlobal
-            // 
-            this.comboGlobal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboGlobal.Location = new System.Drawing.Point(88, 56);
-            this.comboGlobal.Name = "comboGlobal";
-            this.comboGlobal.Size = new System.Drawing.Size(168, 21);
-            this.comboGlobal.Sorted = true;
-            this.comboGlobal.TabIndex = 3;
-            this.comboGlobal.SelectedIndexChanged += new System.EventHandler(this.cbGlobalTypes_SelectedIndexChanged);
             // 
             // comboSimple
             // 
@@ -446,30 +472,12 @@
             "unsignedInt",
             "unsignedLong",
             "unsignedShort"});
-            this.comboSimple.Location = new System.Drawing.Point(88, 24);
+            this.comboSimple.Location = new System.Drawing.Point(92, 334);
             this.comboSimple.Name = "comboSimple";
             this.comboSimple.Size = new System.Drawing.Size(168, 21);
             this.comboSimple.Sorted = true;
             this.comboSimple.TabIndex = 2;
             this.comboSimple.SelectedIndexChanged += new System.EventHandler(this.cbSimpleTypes_SelectedIndexChanged);
-            // 
-            // lblGT
-            // 
-            this.lblGT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGT.Location = new System.Drawing.Point(8, 58);
-            this.lblGT.Name = "lblGT";
-            this.lblGT.Size = new System.Drawing.Size(80, 16);
-            this.lblGT.TabIndex = 1;
-            this.lblGT.Text = "Global Types:";
-            // 
-            // lblST
-            // 
-            this.lblST.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblST.Location = new System.Drawing.Point(8, 26);
-            this.lblST.Name = "lblST";
-            this.lblST.Size = new System.Drawing.Size(80, 16);
-            this.lblST.TabIndex = 0;
-            this.lblST.Text = "Simple Types:";
             // 
             // schemaTree
             // 
@@ -596,17 +604,24 @@
             this.toolStrip.ImageScalingSize = new System.Drawing.Size(25, 25);
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbtnRootElement,
+            this.toolStripLabel1,
             this.tsbtnAddElement,
+            this.toolStripLabel2,
             this.tsbtnAddAttribute,
+            this.toolStripLabel3,
             this.tsbtnDelete,
+            this.toolStripLabel4,
             this.tsbtnAddData,
+            this.toolStripLabel5,
             this.tsbtnAddCDATA,
-            this.tsbtnComment});
+            this.toolStripLabel6,
+            this.tsbtnComment,
+            this.toolStripLabel7});
             this.toolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.toolStrip.Size = new System.Drawing.Size(30, 480);
+            this.toolStrip.Size = new System.Drawing.Size(87, 480);
             this.toolStrip.TabIndex = 5;
             this.toolStrip.Text = "toolStrip1";
             // 
@@ -616,7 +631,7 @@
             this.tsbtnRootElement.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnRootElement.Image")));
             this.tsbtnRootElement.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnRootElement.Name = "tsbtnRootElement";
-            this.tsbtnRootElement.Size = new System.Drawing.Size(27, 29);
+            this.tsbtnRootElement.Size = new System.Drawing.Size(84, 29);
             this.tsbtnRootElement.Text = "Root Element";
             this.tsbtnRootElement.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbtnRootElement.ToolTipText = "Insert a Root Element";
@@ -628,7 +643,7 @@
             this.tsbtnAddElement.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnAddElement.Image")));
             this.tsbtnAddElement.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnAddElement.Name = "tsbtnAddElement";
-            this.tsbtnAddElement.Size = new System.Drawing.Size(27, 29);
+            this.tsbtnAddElement.Size = new System.Drawing.Size(84, 29);
             this.tsbtnAddElement.Text = "Add Element";
             this.tsbtnAddElement.Click += new System.EventHandler(this.tsbtnAddElement_Click);
             // 
@@ -638,7 +653,7 @@
             this.tsbtnAddAttribute.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnAddAttribute.Image")));
             this.tsbtnAddAttribute.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnAddAttribute.Name = "tsbtnAddAttribute";
-            this.tsbtnAddAttribute.Size = new System.Drawing.Size(27, 29);
+            this.tsbtnAddAttribute.Size = new System.Drawing.Size(84, 29);
             this.tsbtnAddAttribute.Text = "Add Attribute";
             this.tsbtnAddAttribute.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             this.tsbtnAddAttribute.Click += new System.EventHandler(this.tsbAddAttribute_Click);
@@ -649,7 +664,7 @@
             this.tsbtnDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnDelete.Image")));
             this.tsbtnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnDelete.Name = "tsbtnDelete";
-            this.tsbtnDelete.Size = new System.Drawing.Size(27, 29);
+            this.tsbtnDelete.Size = new System.Drawing.Size(84, 29);
             this.tsbtnDelete.Text = "toolStripButton1";
             this.tsbtnDelete.Click += new System.EventHandler(this.tsbtnDelete_Click);
             // 
@@ -659,7 +674,7 @@
             this.tsbtnAddData.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnAddData.Image")));
             this.tsbtnAddData.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnAddData.Name = "tsbtnAddData";
-            this.tsbtnAddData.Size = new System.Drawing.Size(27, 29);
+            this.tsbtnAddData.Size = new System.Drawing.Size(84, 29);
             this.tsbtnAddData.Text = "Add Data";
             this.tsbtnAddData.Click += new System.EventHandler(this.tsbtnAddData_Click);
             // 
@@ -669,7 +684,7 @@
             this.tsbtnAddCDATA.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnAddCDATA.Image")));
             this.tsbtnAddCDATA.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnAddCDATA.Name = "tsbtnAddCDATA";
-            this.tsbtnAddCDATA.Size = new System.Drawing.Size(27, 29);
+            this.tsbtnAddCDATA.Size = new System.Drawing.Size(84, 29);
             this.tsbtnAddCDATA.Text = "Add CData";
             this.tsbtnAddCDATA.Click += new System.EventHandler(this.tsbtnAddCDATA_Click);
             // 
@@ -679,7 +694,7 @@
             this.tsbtnComment.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnComment.Image")));
             this.tsbtnComment.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnComment.Name = "tsbtnComment";
-            this.tsbtnComment.Size = new System.Drawing.Size(27, 29);
+            this.tsbtnComment.Size = new System.Drawing.Size(84, 29);
             this.tsbtnComment.Text = "Add Comment";
             this.tsbtnComment.Click += new System.EventHandler(this.tsbtnComment_Click);
             // 
@@ -687,20 +702,47 @@
             // 
             this.openFileDialog.FileName = "openFileDialog";
             // 
-            // validateXMLFromSchemaToolStripMenuItem
+            // toolStripLabel1
             // 
-            this.validateXMLFromSchemaToolStripMenuItem.Name = "validateXMLFromSchemaToolStripMenuItem";
-            this.validateXMLFromSchemaToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.validateXMLFromSchemaToolStripMenuItem.Text = "Validate XML from Schema";
-            this.validateXMLFromSchemaToolStripMenuItem.Click += new System.EventHandler(this.validateXMLFromSchemaToolStripMenuItem_Click);
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel1.Text = "Add Root";
             // 
-            // txtOutput
+            // toolStripLabel2
             // 
-            this.txtOutput.Location = new System.Drawing.Point(401, 368);
-            this.txtOutput.Multiline = true;
-            this.txtOutput.Name = "txtOutput";
-            this.txtOutput.Size = new System.Drawing.Size(649, 72);
-            this.txtOutput.TabIndex = 4;
+            this.toolStripLabel2.Name = "toolStripLabel2";
+            this.toolStripLabel2.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel2.Text = "Add Element";
+            // 
+            // toolStripLabel3
+            // 
+            this.toolStripLabel3.Name = "toolStripLabel3";
+            this.toolStripLabel3.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel3.Text = "Add Attribute";
+            // 
+            // toolStripLabel4
+            // 
+            this.toolStripLabel4.Name = "toolStripLabel4";
+            this.toolStripLabel4.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel4.Text = "Delete";
+            // 
+            // toolStripLabel5
+            // 
+            this.toolStripLabel5.Name = "toolStripLabel5";
+            this.toolStripLabel5.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel5.Text = "Add Data";
+            // 
+            // toolStripLabel6
+            // 
+            this.toolStripLabel6.Name = "toolStripLabel6";
+            this.toolStripLabel6.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel6.Text = "Add CDATA";
+            // 
+            // toolStripLabel7
+            // 
+            this.toolStripLabel7.Name = "toolStripLabel7";
+            this.toolStripLabel7.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel7.Text = "Add Comment";
             // 
             // Main
             // 
@@ -723,7 +765,6 @@
             this.tabXML.ResumeLayout(false);
             this.tabXML.PerformLayout();
             this.tabSchema.ResumeLayout(false);
-            this.gbSelectType.ResumeLayout(false);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -773,7 +814,6 @@
         private System.Windows.Forms.ToolStripButton tsbtnComment;
         private System.Windows.Forms.WebBrowser xmlBrowserWindow;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.GroupBox gbSelectType;
         private System.Windows.Forms.ComboBox comboGlobal;
         private System.Windows.Forms.ComboBox comboSimple;
         private System.Windows.Forms.Label lblGT;
@@ -803,6 +843,13 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.ToolStripMenuItem validateXMLFromSchemaToolStripMenuItem;
         private System.Windows.Forms.TextBox txtOutput;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel3;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel4;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel5;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel6;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel7;
     }
 }
 
