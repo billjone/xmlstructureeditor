@@ -132,13 +132,13 @@ namespace xmlStructureEditor
 
 
 
-            BalloonPopUp.MessageBalloon m_mb = new BalloonPopUp.MessageBalloon();
+            popupTips.tipM m_mb = new popupTips.tipM();
             m_mb.Parent = this.toolStrip;
             m_mb.Title = "Step One";
             m_mb.TitleIcon = TooltipIcon.Info;
             m_mb.Text = "You must add a Root Element to begin!";
 
-            BalloonPopUp.BalloonAlignment ba = (BalloonPopUp.BalloonAlignment)Enum.Parse(typeof(BalloonPopUp.BalloonAlignment), "TopLeft");
+            popupTips.tipAlignment ba = (popupTips.tipAlignment)Enum.Parse(typeof(popupTips.tipAlignment), "TopLeft");
             m_mb.Align = ba;
             m_mb.CenterStem = true;
             m_mb.UseAbsolutePositioning = false;

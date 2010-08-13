@@ -12,7 +12,7 @@ namespace xmlStructureEditor
     public partial class addRootElement : Form
     {
         private string _rootElementName;
-        private EditBalloon editBalloon = new EditBalloon();
+        private eTip editBalloon = new eTip();
 
         public addRootElement()
         {

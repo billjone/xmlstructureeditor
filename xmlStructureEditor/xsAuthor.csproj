@@ -129,7 +129,7 @@
     <Compile Include="addView\addRootElement.Designer.cs">
       <DependentUpon>addRootElement.cs</DependentUpon>
     </Compile>
-    <Compile Include="BalloonPopUp.cs" />
+    <Compile Include="popuptips.cs" />
     <Compile Include="calcIndex.cs" />
     <Compile Include="genTreeTags.cs" />
     <Compile Include="Main.cs">
