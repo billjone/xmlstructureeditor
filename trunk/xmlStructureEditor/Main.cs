@@ -28,7 +28,6 @@ namespace xmlStructureEditor
     public partial class Main : Form
     {        
         XmlDocument xmlDoc; // Accessible xmlDocument
-        XmlDocument undoDoc; // Undo Functionality Document
         enum ObjectType { Schema, Element, SimpleType, ComplexType, Attribute };
         private string prevLabel;
         private XmlSchema schemaDoc;
@@ -123,6 +122,8 @@ namespace xmlStructureEditor
             xmlDoc.NodeInserted += new XmlNodeChangedEventHandler(updateXmlDisplays);
             xmlDoc.NodeRemoved += new XmlNodeChangedEventHandler(updateXmlDisplays);
             xmlDoc.NodeChanged += new XmlNodeChangedEventHandler(updateXmlDisplays);
+
+            mainTabs.SelectedIndexChanged += new EventHandler(mainTabs_SelectedIndexChanged);
 
             tsbtnAddAttribute.Enabled = false;
             tsbtnAddCDATA.Enabled = false;
@@ -948,11 +949,60 @@ namespace xmlStructureEditor
                 comboSimple.SelectedIndex = -1;
             }
         }
+
+        
+        
+
+        private void mainTabs_SelectedIndexChanged(Object sender, EventArgs e)
+        {
+
+
+            if (mainTabs.SelectedIndex == 1)
+            {
+                toolStripLabel1.Visible = false;
+                toolStripLabel2.Visible = false;
+                toolStripLabel3.Visible = false;
+                toolStripLabel4.Visible = false;
+                toolStripLabel5.Visible = false;
+                toolStripLabel6.Visible = false;
+                toolStripLabel7.Visible = false;
+
+                
+                tsbtnAddAttribute.Visible = false;
+                tsbtnAddCDATA.Visible = false;
+                tsbtnAddElement.Visible = false;
+                tsbtnComment.Visible = false;
+                tsbtnAddData.Visible = false;
+                tsbtnDelete.Visible = false;
+                tsbtnRootElement.Visible = false;
+            }
+            else
+            {
+                toolStripLabel1.Visible = true;
+                toolStripLabel2.Visible = true;
+                toolStripLabel3.Visible = true;
+                toolStripLabel4.Visible = true;
+                toolStripLabel5.Visible = true;
+                toolStripLabel6.Visible = true;
+                toolStripLabel7.Visible = true;
+
+                tsbtnRootElement.Visible = true;
+                tsbtnAddAttribute.Visible = true;
+                tsbtnAddCDATA.Visible = true;
+                tsbtnAddElement.Visible = true;
+                tsbtnComment.Visible = true;
+                tsbtnAddData.Visible = true;
+                tsbtnDelete.Visible = true;
+            }
+
+        }
+
+
         
         private void CreateRootNode()
         {
             schemaTree.Nodes.Clear();
-            TreeNode rootNode = new TreeNode("Schema:");
+            TreeNode rootNode = new TreeNode("Root");
             schemaTree.Nodes.Add(rootNode);
             rootNode.ImageIndex = (int)ObjectType.Schema;
             rootNode.SelectedImageIndex = (int)ObjectType.Schema;
@@ -1438,9 +1488,7 @@ namespace xmlStructureEditor
             abtBox.ShowDialog();
         }
 
-        private static bool isValid = true;      // If a validation error occurs,
-        // set this flag to false in the
-        // validation event handler. 
+
         private void validateXMLFromSchemaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ValidateXml();
@@ -1466,7 +1514,14 @@ namespace xmlStructureEditor
             validator.ValidationType = ValidationType.Schema;
 
             XmlSchemaCollection schemas = new XmlSchemaCollection();
-            schemas.Add(null, "temp.xsd");
+            try
+            {
+                schemas.Add(null, "temp.xsd");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
             validator.Schemas.Add(schemas);
 
             validator.ValidationEventHandler += new ValidationEventHandler(ValidationEventHandler);
@@ -1490,6 +1545,8 @@ namespace xmlStructureEditor
         {
             txtOutput.Text += args.Message + "\n";            
         }
+
+        
 
 
 
