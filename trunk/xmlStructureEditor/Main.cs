@@ -111,6 +111,9 @@ namespace xmlStructureEditor
                                   // This treeview will control the entire toolbar availability functionality
 
 
+            if (File.Exists("oldstate.xml"))
+                File.Delete("oldstate.xml");
+
             xmlDoc = new XmlDocument(); // create in memory an empty, default xml document to work with.
                                         // any loaded documents will be placed here
 
@@ -288,9 +291,7 @@ namespace xmlStructureEditor
         } // treeviewNodeType()
 
         private void tsbtnRootElement_Click(object sender, EventArgs e)
-        {
-            // -- Prepare Undo State
-            undoDoc = xmlDoc;
+        {           
 
             // -- Instanciate a form to get the root element information
             addRootElement frmGetRootName = new addRootElement();
@@ -323,7 +324,7 @@ namespace xmlStructureEditor
         private void tsbtnAddElement_Click(object sender, EventArgs e)
         {
             // -- Prepare Undo State
-            undoDoc = xmlDoc;
+            handleUndo(xmlDoc);
 
             // -- Instanciate the Element Form and display it
             addElement frmElement = new addElement();                              
@@ -352,7 +353,7 @@ namespace xmlStructureEditor
         private void tsbAddAttribute_Click(object sender, EventArgs e)
         {
             // -- Prepare Undo State
-            undoDoc = xmlDoc;
+            handleUndo(xmlDoc);
 
             // -- Store the targeted Element
             XmlElement attribTarget = (XmlElement)xmlDoc.SelectSingleNode(xmlTreeview.SelectedNode.Tag.ToString());
@@ -376,7 +377,7 @@ namespace xmlStructureEditor
         private void tsbtnAddData_Click(object sender, EventArgs e)
         {
             // -- Prepare Undo State
-            undoDoc = xmlDoc;
+            handleUndo(xmlDoc);
 
             // -- Create the Form to capture Node Data Information
             addData frm = new addData();                        
@@ -420,7 +421,7 @@ namespace xmlStructureEditor
         private void tsbtnDelete_Click(object sender, EventArgs e) // change this to be more modular, i.e. use functions
         {
             // -- Prepare Undo State
-            undoDoc = xmlDoc;
+            handleUndo(xmlDoc);
 
             try
             {
@@ -504,7 +505,7 @@ namespace xmlStructureEditor
         private void tsbtnAddCDATA_Click(object sender, EventArgs e)
         {
             // -- Prepare Undo State
-            undoDoc = xmlDoc;
+            handleUndo(xmlDoc);
 
             try
             {
@@ -540,7 +541,7 @@ namespace xmlStructureEditor
         private void tsbtnComment_Click(object sender, EventArgs e)
         {
             // -- Prepare Undo State
-            undoDoc = xmlDoc;
+            handleUndo(xmlDoc);
 
             // -- Instanciate a new addComment form and display as a Dialogue box
             addComment frm = new addComment();
@@ -568,10 +569,22 @@ namespace xmlStructureEditor
 
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // -- Undo.
+            if (xmlTreeview.Nodes.Count == 2)
+            {               
+                xmlDoc = new XmlDocument();
+                updateXmlDisplays(null, null);
+                Main_Load(null, null);
+            }
 
-            if (xmlDoc == undoDoc)
-                MessageBox.Show("Same!");
+            if (File.Exists("oldstate.xml"))
+            {                
+                xmlDoc.Load("oldstate.xml");
+                File.Delete("oldstate.xml");                
+            }
+            else
+                MessageBox.Show("No former state found!");
+
+            
         }
 
              
@@ -1373,6 +1386,15 @@ namespace xmlStructureEditor
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
         {
             xmlBrowserWindow.Print();            
+        }
+
+        private void handleUndo(XmlDocument uState)
+        {
+            // -- Write old state to disk
+            XmlTextWriter writer = new XmlTextWriter("oldstate.xml", null);
+            writer.Formatting = Formatting.Indented;
+            uState.Save(writer);
+            writer.Close();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
