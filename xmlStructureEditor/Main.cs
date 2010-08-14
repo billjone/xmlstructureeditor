@@ -99,9 +99,15 @@ namespace xmlStructureEditor
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           xmlDoc = new XmlDocument();
-           updateXmlDisplays(null, null);
-           Main_Load(null, null);
+            if (MessageBox.Show("This will erase your current XML Document. Do you want to proceed?", "New Document", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                xmlDoc = new XmlDocument();
+                updateXmlDisplays(null, null);
+                Main_Load(null, null);
+                this.xmlBrowserWindow.Navigate("about:blank");
+            }
+
+           
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -221,6 +227,17 @@ namespace xmlStructureEditor
             tsbtnComment.Enabled = false;
             tsbtnAddData.Enabled = false;
             tsbtnDelete.Enabled = false;
+            if (currentSelType.Equals(XmlNodeType.XmlDeclaration))
+            {
+                tsbtnRootElement.Enabled = false;
+                tsbtnAddAttribute.Enabled = false;
+                tsbtnAddCDATA.Enabled = false;
+                tsbtnAddElement.Enabled = false;
+                tsbtnComment.Enabled = false;
+                tsbtnAddData.Enabled = false;
+                tsbtnDelete.Enabled = false;
+                return;
+            }
             if (currentSelType.Equals(XmlNodeType.Element) && !haveParent(xmlTreeview))
             {
                 tsbtnAddAttribute.Enabled = true;
@@ -272,6 +289,8 @@ namespace xmlStructureEditor
         XmlNodeType treeviewNodeType(TreeView tview)
         {
             // -- Calculate TreeView Node as an XmlNodeType in an XmlDocument
+            if (tview.SelectedNode.Text.Contains("?xml version"))
+                return XmlNodeType.XmlDeclaration;
             if (tview.SelectedNode.Text.Contains("<!--"))
                 return XmlNodeType.Comment;
             else if (tview.SelectedNode.Text.EndsWith(">"))
@@ -330,19 +349,25 @@ namespace xmlStructureEditor
             // -- Instanciate the Element Form and display it
             addElement frmElement = new addElement();                              
             frmElement.ShowDialog();
-      
 
-            // -- Generate a Nodelist
-             XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview
-               .SelectedNode.Tag.ToString())
-               .ParentNode.ChildNodes;
-            
-            // -- Calculate the TreeIndex, then Append the new Element based on it
-            int decC = calcIndex.calculateTreeIndex(xmlTreeview, xmlDoc);
-            if (nl[decC].NodeType.Equals(XmlNodeType.XmlDeclaration))
-                decC++;
-            nl[decC].AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));
+            try
+            {
+                // -- Generate a Nodelist
+                XmlNodeList nl = xmlDoc.SelectSingleNode(xmlTreeview
+                  .SelectedNode.Tag.ToString())
+                  .ParentNode.ChildNodes;
 
+                // -- Calculate the TreeIndex, then Append the new Element based on it
+                int decC = calcIndex.calculateTreeIndex(xmlTreeview, xmlDoc);
+                if (nl[decC].NodeType.Equals(XmlNodeType.XmlDeclaration))
+                    decC++;
+                nl[decC].AppendChild(xmlDoc.CreateElement(frmElement.getElementName()));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+                
 
         } // tsBtnAddElement_Click()
 

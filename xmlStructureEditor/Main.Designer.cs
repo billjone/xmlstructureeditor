@@ -90,22 +90,22 @@
             this.mnuFacetWhiteSpace = new System.Windows.Forms.MenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.tsbtnRootElement = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.tsbtnAddElement = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.tsbtnAddAttribute = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.tsbtnDelete = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.tsbtnAddData = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
             this.tsbtnAddCDATA = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel6 = new System.Windows.Forms.ToolStripLabel();
             this.tsbtnComment = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel7 = new System.Windows.Forms.ToolStripLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripLabel6 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripLabel7 = new System.Windows.Forms.ToolStripLabel();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusBar.SuspendLayout();
             this.mainTabs.SuspendLayout();
@@ -397,7 +397,7 @@
             this.tabSchema.Location = new System.Drawing.Point(4, 22);
             this.tabSchema.Name = "tabSchema";
             this.tabSchema.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSchema.Size = new System.Drawing.Size(1056, 448);
+            this.tabSchema.Size = new System.Drawing.Size(1003, 448);
             this.tabSchema.TabIndex = 1;
             this.tabSchema.Text = "Schema";
             this.tabSchema.UseVisualStyleBackColor = true;
@@ -637,6 +637,12 @@
             this.tsbtnRootElement.ToolTipText = "Insert a Root Element";
             this.tsbtnRootElement.Click += new System.EventHandler(this.tsbtnRootElement_Click);
             // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel1.Text = "Add Root";
+            // 
             // tsbtnAddElement
             // 
             this.tsbtnAddElement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -646,6 +652,12 @@
             this.tsbtnAddElement.Size = new System.Drawing.Size(84, 29);
             this.tsbtnAddElement.Text = "Add Element";
             this.tsbtnAddElement.Click += new System.EventHandler(this.tsbtnAddElement_Click);
+            // 
+            // toolStripLabel2
+            // 
+            this.toolStripLabel2.Name = "toolStripLabel2";
+            this.toolStripLabel2.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel2.Text = "Add Element";
             // 
             // tsbtnAddAttribute
             // 
@@ -658,6 +670,12 @@
             this.tsbtnAddAttribute.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             this.tsbtnAddAttribute.Click += new System.EventHandler(this.tsbAddAttribute_Click);
             // 
+            // toolStripLabel3
+            // 
+            this.toolStripLabel3.Name = "toolStripLabel3";
+            this.toolStripLabel3.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel3.Text = "Add Attribute";
+            // 
             // tsbtnDelete
             // 
             this.tsbtnDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -667,6 +685,12 @@
             this.tsbtnDelete.Size = new System.Drawing.Size(84, 29);
             this.tsbtnDelete.Text = "toolStripButton1";
             this.tsbtnDelete.Click += new System.EventHandler(this.tsbtnDelete_Click);
+            // 
+            // toolStripLabel4
+            // 
+            this.toolStripLabel4.Name = "toolStripLabel4";
+            this.toolStripLabel4.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel4.Text = "Delete";
             // 
             // tsbtnAddData
             // 
@@ -678,6 +702,12 @@
             this.tsbtnAddData.Text = "Add Data";
             this.tsbtnAddData.Click += new System.EventHandler(this.tsbtnAddData_Click);
             // 
+            // toolStripLabel5
+            // 
+            this.toolStripLabel5.Name = "toolStripLabel5";
+            this.toolStripLabel5.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel5.Text = "Add Data";
+            // 
             // tsbtnAddCDATA
             // 
             this.tsbtnAddCDATA.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -687,6 +717,12 @@
             this.tsbtnAddCDATA.Size = new System.Drawing.Size(84, 29);
             this.tsbtnAddCDATA.Text = "Add CData";
             this.tsbtnAddCDATA.Click += new System.EventHandler(this.tsbtnAddCDATA_Click);
+            // 
+            // toolStripLabel6
+            // 
+            this.toolStripLabel6.Name = "toolStripLabel6";
+            this.toolStripLabel6.Size = new System.Drawing.Size(84, 15);
+            this.toolStripLabel6.Text = "Add CDATA";
             // 
             // tsbtnComment
             // 
@@ -698,51 +734,15 @@
             this.tsbtnComment.Text = "Add Comment";
             this.tsbtnComment.Click += new System.EventHandler(this.tsbtnComment_Click);
             // 
-            // openFileDialog
-            // 
-            this.openFileDialog.FileName = "openFileDialog";
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(84, 15);
-            this.toolStripLabel1.Text = "Add Root";
-            // 
-            // toolStripLabel2
-            // 
-            this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(84, 15);
-            this.toolStripLabel2.Text = "Add Element";
-            // 
-            // toolStripLabel3
-            // 
-            this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(84, 15);
-            this.toolStripLabel3.Text = "Add Attribute";
-            // 
-            // toolStripLabel4
-            // 
-            this.toolStripLabel4.Name = "toolStripLabel4";
-            this.toolStripLabel4.Size = new System.Drawing.Size(84, 15);
-            this.toolStripLabel4.Text = "Delete";
-            // 
-            // toolStripLabel5
-            // 
-            this.toolStripLabel5.Name = "toolStripLabel5";
-            this.toolStripLabel5.Size = new System.Drawing.Size(84, 15);
-            this.toolStripLabel5.Text = "Add Data";
-            // 
-            // toolStripLabel6
-            // 
-            this.toolStripLabel6.Name = "toolStripLabel6";
-            this.toolStripLabel6.Size = new System.Drawing.Size(84, 15);
-            this.toolStripLabel6.Text = "Add CDATA";
-            // 
             // toolStripLabel7
             // 
             this.toolStripLabel7.Name = "toolStripLabel7";
             this.toolStripLabel7.Size = new System.Drawing.Size(84, 15);
             this.toolStripLabel7.Text = "Add Comment";
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.FileName = "openFileDialog";
             // 
             // Main
             // 
