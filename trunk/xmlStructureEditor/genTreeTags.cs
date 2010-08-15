@@ -24,6 +24,8 @@ namespace xmlStructureEditor
     {
         public genTreeTags(TreeView tview)
         {
+  
+      
             for (int k = 0; k < tview.Nodes.Count; k++)
             {                
                 int count = 0;
@@ -43,7 +45,8 @@ namespace xmlStructureEditor
                     visitChildNodes(tview.Nodes[k].Nodes[i], tview.Nodes[k].Nodes[i].Tag.ToString());
                 }
             }
-
+       
+     
         }
 
         private void visitChildNodes(TreeNode node, String prepath)

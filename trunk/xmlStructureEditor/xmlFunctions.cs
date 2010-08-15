@@ -46,14 +46,25 @@ namespace xmlStructureEditor
             inTreeNode.Text = (inXmlNode.OuterXml).Trim();
          }
       }
-
+        
+        public static void createTree(XmlNode xmlNode, TreeNodeCollection treeNodes)
+        {
+            TreeNodeCollection tn = treeNodes;
+            ConvertXmlNodeToTreeNode(xmlNode, tn);
+            treeNodes = tn;
+            
+            
+            
+            
+        }
+        
 
     public static void ConvertXmlNodeToTreeNode(XmlNode xmlNode, // function turns xml doc into a LABELLED treeview
       TreeNodeCollection treeNodes)
     {
+            TreeNode newTreeNode = treeNodes.Add(xmlNode.Name);
 
-             TreeNode newTreeNode = treeNodes.Add(xmlNode.Name);
-            
+
 
             switch (xmlNode.NodeType)
             {
@@ -87,13 +98,16 @@ namespace xmlStructureEditor
             {
                 foreach (XmlAttribute attribute in xmlNode.Attributes)
                 {
-                    ConvertXmlNodeToTreeNode(attribute, newTreeNode.Nodes);
+                   ConvertXmlNodeToTreeNode(attribute, newTreeNode.Nodes);
+           
                 }
             }
             foreach (XmlNode childNode in xmlNode.ChildNodes)
             {
-                ConvertXmlNodeToTreeNode(childNode, newTreeNode.Nodes);
+              ConvertXmlNodeToTreeNode(childNode, newTreeNode.Nodes);
+         
             }
+
         }
 
 

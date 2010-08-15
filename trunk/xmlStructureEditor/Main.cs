@@ -47,6 +47,7 @@ namespace xmlStructureEditor
 
         }
 
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (mainTabs.SelectedIndex == 0)
@@ -160,11 +161,12 @@ namespace xmlStructureEditor
       
         private void updateXmlDisplays(object sender, XmlNodeChangedEventArgs e)
         {
+
             xmlTreeview.BeginUpdate();
             xmlTreeview.Nodes.Clear();
+            xmlFunctions.createTree(xmlDoc, xmlTreeview.Nodes);
             xmlTreeview.EndUpdate();
-            xmlFunctions.ConvertXmlNodeToTreeNode(xmlDoc, xmlTreeview.Nodes);
-            xmlTreeview.ExpandAll();
+           
             
             // -- Generate the complete path tags using the genTreeTags recursive function
             genTreeTags gen = new genTreeTags(xmlTreeview);
@@ -178,8 +180,6 @@ namespace xmlStructureEditor
                 wr.Close();
                 this.xmlBrowserWindow.Navigate(Application.StartupPath + "\\CurrentDocument.xml");
             }
-            
-
         }
       
         
@@ -208,7 +208,9 @@ namespace xmlStructureEditor
       
         void xmlTreeview_AfterSelect(object sender, TreeViewEventArgs e)
         {
-
+            genTreeTags gen;
+            if (xmlTreeview.SelectedNode.Tag == null)
+               gen = new genTreeTags(xmlTreeview);
             if (xmlTreeview.SelectedNode.Text.Equals("#document"))
                 xmlTreeview.SelectedNode.Tag = "/";
 
@@ -1570,6 +1572,18 @@ namespace xmlStructureEditor
         {
             txtOutput.Text += args.Message + "\n";            
         }
+
+        private void genTreeTagsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            genTreeTags gen = new genTreeTags(xmlTreeview);
+        }
+
+        private void redrawToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        
 
         
 
