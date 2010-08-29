@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xsAuthor", "xmlStructureEditor\xsAuthor.csproj", "{87A7279B-63BD-4A15-9286-680A1666F1FE}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "xsAuthorSetup", "xsAuthorSetup\xsAuthorSetup.vdproj", "{169F633D-84B7-45ED-BACD-DAF77237D08D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,12 @@ Global
 		{87A7279B-63BD-4A15-9286-680A1666F1FE}.Release|x64.Build.0 = Release|x64
 		{87A7279B-63BD-4A15-9286-680A1666F1FE}.Release|x86.ActiveCfg = Release|x86
 		{87A7279B-63BD-4A15-9286-680A1666F1FE}.Release|x86.Build.0 = Release|x86
+		{169F633D-84B7-45ED-BACD-DAF77237D08D}.Debug|Any CPU.ActiveCfg = Debug
+		{169F633D-84B7-45ED-BACD-DAF77237D08D}.Debug|x64.ActiveCfg = Debug
+		{169F633D-84B7-45ED-BACD-DAF77237D08D}.Debug|x86.ActiveCfg = Debug
+		{169F633D-84B7-45ED-BACD-DAF77237D08D}.Release|Any CPU.ActiveCfg = Release
+		{169F633D-84B7-45ED-BACD-DAF77237D08D}.Release|x64.ActiveCfg = Release
+		{169F633D-84B7-45ED-BACD-DAF77237D08D}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
