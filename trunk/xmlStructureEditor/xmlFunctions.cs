@@ -21,41 +21,31 @@ namespace xmlStructureEditor
         
     public static void AddNode(XmlNode inXmlNode, TreeNode inTreeNode)
       {
-         XmlNode xNode;
-         TreeNode tNode;
-         XmlNodeList nodeList;
-         int i;
+         XmlNode node;
+         TreeNode treeNode;
+         XmlNodeList nl;
+   
 
-         // Loop through the XML nodes until the leaf is reached.
-         // Add the nodes to the TreeView during the looping process.
          if (inXmlNode.HasChildNodes)
          {
-            nodeList = inXmlNode.ChildNodes;
-            for(i = 0; i<=nodeList.Count - 1; i++)
+            nl = inXmlNode.ChildNodes;
+            for(int i = 0; i <= nl.Count - 1; i++)
             {
-               xNode = inXmlNode.ChildNodes[i];
-               inTreeNode.Nodes.Add(new TreeNode(xNode.Name));
-               tNode = inTreeNode.Nodes[i];
-               AddNode(xNode, tNode);
+               node = inXmlNode.ChildNodes[i];
+               inTreeNode.Nodes.Add(new TreeNode(node.Name));
+               treeNode = inTreeNode.Nodes[i];
+               AddNode(node, treeNode);
             }
          }
          else
-         {
-            // Here you need to pull the data from the XmlNode based on the
-            // type of node, whether attribute values are required, and so forth.
-            inTreeNode.Text = (inXmlNode.OuterXml).Trim();
-         }
+             inTreeNode.Text = (inXmlNode.OuterXml).Trim();         
       }
         
         public static void createTree(XmlNode xmlNode, TreeNodeCollection treeNodes)
         {
             TreeNodeCollection tn = treeNodes;
             ConvertXmlNodeToTreeNode(xmlNode, tn);
-            treeNodes = tn;
-            
-            
-            
-            
+            treeNodes = tn;            
         }
         
 
@@ -63,9 +53,6 @@ namespace xmlStructureEditor
       TreeNodeCollection treeNodes)
     {
             TreeNode newTreeNode = treeNodes.Add(xmlNode.Name);
-
-
-
             switch (xmlNode.NodeType)
             {
                 case XmlNodeType.ProcessingInstruction:
@@ -95,19 +82,11 @@ namespace xmlStructureEditor
             }
 
             if (xmlNode.Attributes != null)
-            {
                 foreach (XmlAttribute attribute in xmlNode.Attributes)
-                {
-                   ConvertXmlNodeToTreeNode(attribute, newTreeNode.Nodes);
-           
-                }
-            }
+                   ConvertXmlNodeToTreeNode(attribute, newTreeNode.Nodes);           
+          
             foreach (XmlNode childNode in xmlNode.ChildNodes)
-            {
-              ConvertXmlNodeToTreeNode(childNode, newTreeNode.Nodes);
-         
-            }
-
+                ConvertXmlNodeToTreeNode(childNode, newTreeNode.Nodes);
         }
 
 
