@@ -450,7 +450,7 @@ namespace xmlStructureEditor
         {
             // -- Prepare Undo State
             handleUndo(xmlDoc);
-
+            
             try
             {
                 if (xmlTreeview.SelectedNode.FullPath.ToString().EndsWith("]") &&
